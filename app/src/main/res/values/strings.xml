@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">ClassSchedule</string>
+    <string name="go">开始使用</string>
+    <string name="skip">跳过</string>
+    <string name="course_settings">课程设置</string>
+    <string name="add_course">添加课程</string>
+    <string name="default_course_name">默认课程名称</string>
+    <string name="from_and_end_text">上课周数：</string>
+    <string name="default_from_and_end_time">默认上课周数</string>
+    <string name="course_time">上课时间：</string>
+    <string name="default_course_time">默认上课时间</string>
+    <string name="course_location">上课地点：</string>
+    <string name="default_course_location">默认上课地点</string>
+    <string name="more">更多操作</string>
+    <string name="no_courses">还没有课程哦</string>
+</resources>
