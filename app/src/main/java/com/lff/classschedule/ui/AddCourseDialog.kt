@@ -1,6 +1,5 @@
 package com.lff.classschedule.ui
 
-import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,22 +12,17 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.DialogTitle
 import androidx.fragment.app.DialogFragment
 
 import com.lff.classschedule.R
 import androidx.core.content.edit
+import com.lff.classschedule.config.SchoolScheduleConfig
+import com.lff.classschedule.pojo.Course
+import com.lff.classschedule.util.CourseTimeUtil
 
 class AddCourseDialog(
-    private val initialData: Bundle? = null,
-    private val onSave: (name: String, start: Int, end: Int, day: Int, time: String, loc: String) -> Unit) : DialogFragment() {
-
-    companion object{
-        val DEFAULT_START_TIMES = arrayOf(
-            "08:00", "08:50", "9:50", "10:40", "14:00", "14:50", "15:50", "16:40", "17:30", "19:00", "19:50", "20:40"
-        )
-        const val DEFAULT_DURATION = 45
-    }
+    private val initialCourse: Course? = null,
+    private val onSave: (course: Course) -> Unit) : DialogFragment() {
 
     private lateinit var tvTitle: TextView
     private lateinit var etName: EditText
@@ -77,7 +71,8 @@ class AddCourseDialog(
         // 设置点击外部不关闭
         dialog?.setCanceledOnTouchOutside(false)
 
-        val weeks = (1..18).map { "第 $it 周" }
+        val maxWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(requireContext())
+        val weeks = (1..maxWeeks).map { "第 $it 周" }
         // 开始周：1-18 正序
         spStartWeek.adapter = ArrayAdapter(
             requireContext(),
@@ -94,7 +89,8 @@ class AddCourseDialog(
         val days = arrayOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
         spDay.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, days)
 
-        val lessons = (1..12).map { "第 $it 节" }
+        val maxLessons = SchoolScheduleConfig.getMaxLessonsPerDay(requireContext())
+        val lessons = (1..maxLessons).map { "第 $it 节" }
         val lessonAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, lessons)
         spStartLesson.adapter = lessonAdapter
         spEndLesson.adapter = lessonAdapter
@@ -131,59 +127,35 @@ class AddCourseDialog(
                 return@setOnClickListener
             }
 
-            val startTimeStr = DEFAULT_START_TIMES[startLessonIdx]
-            val endTimeStr = calculateEndTime(DEFAULT_START_TIMES[endLessonIdx], DEFAULT_DURATION)
-            val finalTimeRange = "$startTimeStr-$endTimeStr"
+            val timeRange = CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
+                requireContext(), startLessonIdx+1, endLessonIdx+1)
+            if (timeRange == "") {
+                Toast.makeText(context, "请检查课程时间设置", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             // 回调给 Activity 执行数据库插入
-            onSave(name, startWeek, endWeek, dayOfWeek, finalTimeRange, location)
+            val course = Course(name, startWeek, endWeek, dayOfWeek, startLessonIdx+1, endLessonIdx+1, location)
+            onSave(course)
             dismiss()
         }
 
         // 如果是修改课程，则填充已有数据
-        initialData?.let { preFillData(it) }
+        initialCourse?.let { preFillData(it) }
     }
 
-    private fun calculateEndTime(startTime: String, durationMinutes: Int): String {
-        val parts = startTime.split(":")
-        var hour = parts[0].toInt()
-        var minute = parts[1].toInt()
+    private fun preFillData(course: Course) {
+        val totalWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(requireContext()) // 获取当前设定的总周数
 
-        minute += durationMinutes
-        if (minute >= 60) {
-            hour += minute / 60
-            minute %= 60
-        }
-        return String.format("%02d:%02d", hour, minute)
-    }
-
-    private fun preFillData(data: Bundle) {
         tvTitle.text = "修改课程"
+        etName.setText(course.name)
+        etLocation.setText(course.location)
 
-        etName.setText(data.getString("name"))
-        etLocation.setText(data.getString("location"))
+        spStartWeek.setSelection(course.startWeek - 1)
+        spEndWeek.setSelection(totalWeeks - course.endWeek)
 
-        // 填充周数 索引 = 数字 - 1
-        spStartWeek.setSelection(data.getInt("startWeek") - 1)
-        // 结束周是倒序 [18, 17...1]，公式：18 - 数字
-        spEndWeek.setSelection(18 - data.getInt("endWeek"))
-
-        // 填充星期 索引 = 数据库值 - 1
-        spDay.setSelection(data.getInt("dayOfWeek") - 1)
-
-        // 填充节次 需要从时间段字符串 "08:00-09:35" 解析回索引
-        val timeRange = data.getString("timeRange") ?: ""
-        if (timeRange.contains("-")) {
-            val startTime = timeRange.split("-")[0]
-            val endTime = timeRange.split("-")[1]
-
-            // 匹配开始节次索引
-            val startIdx = DEFAULT_START_TIMES.indexOf(startTime)
-            if (startIdx != -1) spStartLesson.setSelection(startIdx)
-
-            // 匹配结束节次索引
-            val endIdx = DEFAULT_START_TIMES.indexOfFirst { calculateEndTime(it, DEFAULT_DURATION) == endTime }
-            if (endIdx != -1) spEndLesson.setSelection(endIdx)
-        }
+        spDay.setSelection(course.dayOfWeek - 1)
+        spStartLesson.setSelection(course.startLesson - 1)
+        spEndLesson.setSelection(course.endLesson - 1)
     }
 }

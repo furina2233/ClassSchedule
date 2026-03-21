@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.database.CourseDbHelper.Companion.TABLE_NAME
+import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.ui.AddCourseDialog
+import com.lff.classschedule.util.CourseTimeUtil
 
 class CoursesSettingActivity : AppCompatActivity() {
 
@@ -81,39 +83,45 @@ class CoursesSettingActivity : AppCompatActivity() {
         val db = dbHelper.readableDatabase
         // 查询所有课程
         val cursor = db.query(
-            CourseDbHelper.TABLE_NAME,
+            TABLE_NAME,
             null, null, null, null, null,
-            "${CourseDbHelper.COL_DAY_OF_WEEK} ASC" // 按星期几排序
+            "${CourseDbHelper.COL_DAY_OF_WEEK} ASC, ${CourseDbHelper.COL_START_LESSON} ASC" // 先按星期几排，再按上课时间排
         )
 
         if (cursor.moveToFirst()) {
             Log.d(TAG, "数据库中有课程")
             do {
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
-                val name = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_NAME))
-                val startWeek = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_START_WEEK))
-                val endWeek = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_END_WEEK))
-                val dayOfWeek = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_DAY_OF_WEEK))
-                val timeRange = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_COURSE_TIME))
-                val location = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_COURSE_LOCATION))
+                val course = Course(
+                    cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_NAME)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_START_WEEK)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_END_WEEK)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_DAY_OF_WEEK)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_START_LESSON)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_END_LESSON)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_COURSE_LOCATION))
+                )
 
                 // 加载卡片布局
                 val itemView = LayoutInflater.from(this).inflate(R.layout.item_course_card, container, false)
 
                 val btnMore = itemView.findViewById<ImageButton>(R.id.btn_more)
-                setupPopupMenu(btnMore, id, name)
+                setupPopupMenu(btnMore, id, course)
 
-                itemView.findViewById<TextView>(R.id.tv_course_name).text = name
+                itemView.findViewById<TextView>(R.id.tv_course_name).text = course.name
 
                 // 格式化周数：1-18 周
-                val weekText = "$startWeek-$endWeek 周"
+                val weekText = "${course.startWeek}-${course.endWeek} 周"
                 itemView.findViewById<TextView>(R.id.tv_course_weeks).text = weekText
 
                 // 格式化时间：周一 9:50-12:15
-                val timeText = "${getDayOfWeekText(dayOfWeek)} $timeRange"
+                val timeText = CourseTimeUtil.getDayOfWeekText(course.dayOfWeek) + "  " +
+                        CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
+                            this, course.startLesson, course.endLesson
+                        )
                 itemView.findViewById<TextView>(R.id.tv_course_time).text = timeText
 
-                itemView.findViewById<TextView>(R.id.tv_course_location).text = location
+                itemView.findViewById<TextView>(R.id.tv_course_location).text = course.location
 
                 // 将卡片放入滚动视图的容器中
                 container.addView(itemView)
@@ -126,36 +134,20 @@ class CoursesSettingActivity : AppCompatActivity() {
         Log.d(TAG, "已从数据库加载课程数据")
     }
 
-    private fun getDayOfWeekText(day: Int): String {
-        return when (day) {
-            1 -> "周一"
-            2 -> "周二"
-            3 -> "周三"
-            4 -> "周四"
-            5 -> "周五"
-            6 -> "周六"
-            7 -> "周日"
-            else -> "未知"
-        }
-    }
-
-    private fun setupPopupMenu(btnMore: ImageButton, courseId: Int, courseName: String) {
+    private fun setupPopupMenu(btnMore: ImageButton, courseId: Int, course: Course) {
         btnMore.setOnClickListener { v ->
             val popup = PopupMenu(this, v)
             popup.menuInflater.inflate(R.menu.course_item_menu, popup.menu)
-
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.menu_edit -> {
-                        showEditCourseDialog(courseId)
+                        showEditCourseDialog(courseId, course) // 优化：直接把已有对象传过去，不用再查数据库
                         true
                     }
-
                     R.id.menu_delete -> {
-                        showDeleteConfirmDialog(courseId, courseName)
+                        showDeleteConfirmDialog(courseId, course.name) // 使用对象的属性
                         true
                     }
-
                     else -> false
                 }
             }
@@ -163,52 +155,30 @@ class CoursesSettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun showEditCourseDialog(courseId: Int) {
-        val db = dbHelper.readableDatabase
-
-        val cursor = db.query(
-            CourseDbHelper.TABLE_NAME,
-            null, "id = ?", arrayOf(courseId.toString()),
-            null, null, null
-        )
-
-        if (cursor.moveToFirst()) {
-            val name = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_NAME))
-            val startW = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_START_WEEK))
-            val endW = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_END_WEEK))
-            val day = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_DAY_OF_WEEK))
-            val time = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_COURSE_TIME))
-            val loc = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_COURSE_LOCATION))
-
-            val bundle = Bundle().apply {
-                putString("name", name)
-                putInt("startWeek", startW)
-                putInt("endWeek", endW)
-                putInt("dayOfWeek", day)
-                putString("timeRange", time)
-                putString("location", loc)
-            }
-
-            val dialog = AddCourseDialog(bundle) { newName, newStart, newEnd, newDay, newTime, newLoc ->
-                updateCourseInDb(courseId, newName, newStart, newEnd, newDay, newTime, newLoc)
-            }
-            dialog.show(supportFragmentManager, "EditCourseDialog")
+    private fun showEditCourseDialog(courseId: Int, course: Course) {
+        val dialog = AddCourseDialog(course) { updatedCourse ->
+            updateCourseInDb(courseId, updatedCourse)
         }
-        cursor.close()
+        dialog.show(supportFragmentManager, "EditCourseDialog")
     }
 
-    private fun updateCourseInDb(id: Int, name: String, start: Int, end: Int, day: Int, time: String, loc: String) {
-        val db = dbHelper.writableDatabase
-        val values = ContentValues().apply {
+    private fun Course.toContentValues(): ContentValues {
+        return ContentValues().apply {
             put(CourseDbHelper.COL_NAME, name)
-            put(CourseDbHelper.COL_START_WEEK, start)
-            put(CourseDbHelper.COL_END_WEEK, end)
-            put(CourseDbHelper.COL_DAY_OF_WEEK, day)
-            put(CourseDbHelper.COL_COURSE_TIME, time)
-            put(CourseDbHelper.COL_COURSE_LOCATION, loc)
+            put(CourseDbHelper.COL_START_WEEK, startWeek)
+            put(CourseDbHelper.COL_END_WEEK, endWeek)
+            put(CourseDbHelper.COL_DAY_OF_WEEK, dayOfWeek)
+            put(CourseDbHelper.COL_START_LESSON, startLesson)
+            put(CourseDbHelper.COL_END_LESSON, endLesson)
+            put(CourseDbHelper.COL_COURSE_LOCATION, location)
         }
+    }
 
-        val rows = db.update(CourseDbHelper.TABLE_NAME, values, "id = ?", arrayOf(id.toString()))
+    private fun updateCourseInDb(
+        id: Int, course: Course
+    ) {
+        val db = dbHelper.writableDatabase
+        val rows = db.update(TABLE_NAME, course.toContentValues(), "id = ?", arrayOf(id.toString()))
 
         if (rows > 0) {
             Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show()
@@ -256,29 +226,21 @@ class CoursesSettingActivity : AppCompatActivity() {
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED)
     }
 
-    private fun setupAddCourseButton(){
-        val dialog = AddCourseDialog { name, start, end, day, time, loc ->
-            val db = dbHelper.writableDatabase
-            val values = ContentValues().apply {
-                put(CourseDbHelper.COL_NAME, name)
-                put(CourseDbHelper.COL_START_WEEK, start)
-                put(CourseDbHelper.COL_END_WEEK, end)
-                put(CourseDbHelper.COL_DAY_OF_WEEK, day)
-                put(CourseDbHelper.COL_COURSE_TIME, time)
-                put(CourseDbHelper.COL_COURSE_LOCATION, loc)
-            }
-
-            val newRowId = db.insert(TABLE_NAME, null, values)
-
-            if (newRowId != -1L) {
-                Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show()
-                loadCoursesFromDb() // 刷新列表，这样刚添加的卡片就会显示出来
-            } else {
-                Toast.makeText(this, "添加失败", Toast.LENGTH_SHORT).show()
-            }
+    private fun setupAddCourseButton() {
+        val dialog = AddCourseDialog { course ->
+            saveCourseToDb(course)
         }
-
-        // 显示弹窗
         dialog.show(supportFragmentManager, "AddCourseDialog")
+    }
+
+    private fun saveCourseToDb(course: Course) {
+        val db = dbHelper.writableDatabase
+        val newRowId = db.insert(TABLE_NAME, null, course.toContentValues())
+        if (newRowId != -1L) {
+            Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show()
+            loadCoursesFromDb()
+        } else {
+            Toast.makeText(this, "添加失败", Toast.LENGTH_SHORT).show()
+        }
     }
 }

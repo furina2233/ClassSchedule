@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 class CourseDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION){
     companion object {
         const val DATABASE_NAME = "ClassSchedule.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val TABLE_NAME = "courses_table"
 
         // 列名定义
@@ -15,7 +15,8 @@ class CourseDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_START_WEEK = "start_week"
         const val COL_END_WEEK = "end_week"
         const val COL_DAY_OF_WEEK = "day_of_week"
-        const val COL_COURSE_TIME = "time_range"
+        const val COL_START_LESSON = "start_lesson"
+        const val COL_END_LESSON = "end_lesson"
         const val COL_COURSE_LOCATION = "location"
     }
 
@@ -28,7 +29,8 @@ class CourseDbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 $COL_START_WEEK INTEGER,
                 $COL_END_WEEK INTEGER,
                 $COL_DAY_OF_WEEK INTEGER,
-                $COL_COURSE_TIME TEXT,
+                $COL_START_LESSON INTEGER,
+                $COL_END_LESSON INTEGER,
                 $COL_COURSE_LOCATION TEXT
             )
         """.trimIndent()
