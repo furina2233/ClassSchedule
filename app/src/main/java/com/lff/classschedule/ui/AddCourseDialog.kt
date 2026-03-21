@@ -1,0 +1,189 @@
+package com.lff.classschedule.ui
+
+import android.app.TimePickerDialog
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.DialogTitle
+import androidx.fragment.app.DialogFragment
+
+import com.lff.classschedule.R
+import androidx.core.content.edit
+
+class AddCourseDialog(
+    private val initialData: Bundle? = null,
+    private val onSave: (name: String, start: Int, end: Int, day: Int, time: String, loc: String) -> Unit) : DialogFragment() {
+
+    companion object{
+        val DEFAULT_START_TIMES = arrayOf(
+            "08:00", "08:50", "9:50", "10:40", "14:00", "14:50", "15:50", "16:40", "17:30", "19:00", "19:50", "20:40"
+        )
+        const val DEFAULT_DURATION = 45
+    }
+
+    private lateinit var tvTitle: TextView
+    private lateinit var etName: EditText
+    private lateinit var etLocation: EditText
+    private lateinit var spStartWeek: Spinner
+    private lateinit var spEndWeek: Spinner
+    private lateinit var spDay: Spinner
+    private lateinit var spStartLesson: Spinner
+    private lateinit var spEndLesson: Spinner
+    private lateinit var btnSave: Button
+
+    override fun onStart() {
+        super.onStart()
+        // 获取对话框的窗口对象
+        dialog?.window?.let { window ->
+            // 设置宽度为屏幕宽度的 90% (或者其他比例)，高度自适应
+            val params = window.attributes
+            params.width = (resources.displayMetrics.widthPixels * 0.9).toInt()
+            params.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            window.attributes = params
+
+            // 可选：如果你想要圆角效果，通常需要设置背景为透明
+            // window.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        // 手动加载布局
+        return inflater.inflate(R.layout.dialog_add_course, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        tvTitle = view.findViewById(R.id.tv_add_course_dialog_title)
+        etName = view.findViewById(R.id.et_course_name)
+        etLocation = view.findViewById(R.id.et_location)
+        spStartWeek = view.findViewById(R.id.spinner_start_week)
+        spEndWeek = view.findViewById(R.id.spinner_end_week)
+        spDay = view.findViewById(R.id.spinner_day_of_week)
+        spStartLesson = view.findViewById(R.id.spinner_start_lesson)
+        spEndLesson = view.findViewById(R.id.spinner_end_lesson)
+        btnSave = view.findViewById(R.id.btn_save)
+
+        // 设置点击外部不关闭
+        dialog?.setCanceledOnTouchOutside(false)
+
+        val weeks = (1..18).map { "第 $it 周" }
+        // 开始周：1-18 正序
+        spStartWeek.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            weeks
+        )
+        // 结束周：18-1 倒序
+        spEndWeek.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            weeks.reversed()
+        )
+
+        val days = arrayOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
+        spDay.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, days)
+
+        val lessons = (1..12).map { "第 $it 节" }
+        val lessonAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, lessons)
+        spStartLesson.adapter = lessonAdapter
+        spEndLesson.adapter = lessonAdapter
+
+        // 处理首次使用提示
+        val prefs = requireContext().getSharedPreferences("class_schedule_config", Context.MODE_PRIVATE)
+        if (prefs.getBoolean("is_first_time", true)) {
+            Toast.makeText(context, "稍后可在设置中自定义每节课的具体时间哦", Toast.LENGTH_LONG).show()
+            prefs.edit { putBoolean("is_first_time", false) }
+        }
+
+        btnSave.setOnClickListener {
+            val name = etName.text.toString().trim()
+            val location = etLocation.text.toString().trim()
+
+            // 获取选择的数值
+            val startWeek = spStartWeek.selectedItem.toString().filter { it.isDigit() }.toInt()
+            val endWeek = spEndWeek.selectedItem.toString().filter { it.isDigit() }.toInt()
+            val dayOfWeek = spDay.selectedItemPosition + 1 // 数据库存储 1-7
+            val startLessonIdx = spStartLesson.selectedItemPosition
+            val endLessonIdx = spEndLesson.selectedItemPosition
+
+            // TODO:后面需要修改
+            if (name.isEmpty()) {
+                Toast.makeText(context, "请输入课程名称", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (startWeek > endWeek) {
+                Toast.makeText(context, "起始周不能大于结束周", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (startLessonIdx > endLessonIdx) {
+                Toast.makeText(context, "起始节次不能晚于结束节次", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val startTimeStr = DEFAULT_START_TIMES[startLessonIdx]
+            val endTimeStr = calculateEndTime(DEFAULT_START_TIMES[endLessonIdx], DEFAULT_DURATION)
+            val finalTimeRange = "$startTimeStr-$endTimeStr"
+
+            // 回调给 Activity 执行数据库插入
+            onSave(name, startWeek, endWeek, dayOfWeek, finalTimeRange, location)
+            dismiss()
+        }
+
+        // 如果是修改课程，则填充已有数据
+        initialData?.let { preFillData(it) }
+    }
+
+    private fun calculateEndTime(startTime: String, durationMinutes: Int): String {
+        val parts = startTime.split(":")
+        var hour = parts[0].toInt()
+        var minute = parts[1].toInt()
+
+        minute += durationMinutes
+        if (minute >= 60) {
+            hour += minute / 60
+            minute %= 60
+        }
+        return String.format("%02d:%02d", hour, minute)
+    }
+
+    private fun preFillData(data: Bundle) {
+        tvTitle.text = "修改课程"
+
+        etName.setText(data.getString("name"))
+        etLocation.setText(data.getString("location"))
+
+        // 填充周数 索引 = 数字 - 1
+        spStartWeek.setSelection(data.getInt("startWeek") - 1)
+        // 结束周是倒序 [18, 17...1]，公式：18 - 数字
+        spEndWeek.setSelection(18 - data.getInt("endWeek"))
+
+        // 填充星期 索引 = 数据库值 - 1
+        spDay.setSelection(data.getInt("dayOfWeek") - 1)
+
+        // 填充节次 需要从时间段字符串 "08:00-09:35" 解析回索引
+        val timeRange = data.getString("timeRange") ?: ""
+        if (timeRange.contains("-")) {
+            val startTime = timeRange.split("-")[0]
+            val endTime = timeRange.split("-")[1]
+
+            // 匹配开始节次索引
+            val startIdx = DEFAULT_START_TIMES.indexOf(startTime)
+            if (startIdx != -1) spStartLesson.setSelection(startIdx)
+
+            // 匹配结束节次索引
+            val endIdx = DEFAULT_START_TIMES.indexOfFirst { calculateEndTime(it, DEFAULT_DURATION) == endTime }
+            if (endIdx != -1) spEndLesson.setSelection(endIdx)
+        }
+    }
+}

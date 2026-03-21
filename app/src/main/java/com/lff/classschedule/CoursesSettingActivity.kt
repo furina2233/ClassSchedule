@@ -15,14 +15,18 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.database.CourseDbHelper.Companion.TABLE_NAME
+import com.lff.classschedule.ui.AddCourseDialog
 
 class CoursesSettingActivity : AppCompatActivity() {
 
     val TAG = "CoursesSettingActivity"
 
     private lateinit var dbHelper: CourseDbHelper
+
+    private lateinit var btnAddCourse: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +38,8 @@ class CoursesSettingActivity : AppCompatActivity() {
             Log.d(TAG, "数据库已就绪，表 $TABLE_NAME 已检查/创建")
         }
 
-        onBackPressedDispatcher.addCallback{
+        // 从课程设置页面返回时一定返回主页
+        onBackPressedDispatcher.addCallback {
             val intent = Intent(this@CoursesSettingActivity, HomeActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             startActivity(intent)
@@ -61,11 +66,17 @@ class CoursesSettingActivity : AppCompatActivity() {
 //        }
 
         loadCoursesFromDb()
+
+        btnAddCourse = findViewById(R.id.btn_add_course)
+        btnAddCourse.setOnClickListener {
+            setupAddCourseButton()
+        }
     }
 
     private fun loadCoursesFromDb() {
         val container = findViewById<LinearLayout>(R.id.ll_course_list)
         container.removeAllViews() // 先清空，防止重复添加
+        findViewById<TextView>(R.id.tv_no_courses).visibility = View.GONE
 
         val db = dbHelper.readableDatabase
         // 查询所有课程
@@ -76,7 +87,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         )
 
         if (cursor.moveToFirst()) {
-            Log.d(TAG,"数据库中有课程")
+            Log.d(TAG, "数据库中有课程")
             do {
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
                 val name = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_NAME))
@@ -92,7 +103,6 @@ class CoursesSettingActivity : AppCompatActivity() {
                 val btnMore = itemView.findViewById<ImageButton>(R.id.btn_more)
                 setupPopupMenu(btnMore, id, name)
 
-                // 填充数据到卡片组件
                 itemView.findViewById<TextView>(R.id.tv_course_name).text = name
 
                 // 格式化周数：1-18 周
@@ -105,12 +115,10 @@ class CoursesSettingActivity : AppCompatActivity() {
 
                 itemView.findViewById<TextView>(R.id.tv_course_location).text = location
 
-
                 // 将卡片放入滚动视图的容器中
                 container.addView(itemView)
-
             } while (cursor.moveToNext())
-        }else{
+        } else {
             Log.d(TAG, "数据库中无课程")
             findViewById<TextView>(R.id.tv_no_courses).visibility = View.VISIBLE
         }
@@ -118,7 +126,20 @@ class CoursesSettingActivity : AppCompatActivity() {
         Log.d(TAG, "已从数据库加载课程数据")
     }
 
-    fun setupPopupMenu(btnMore: ImageButton, courseId : Int, courseName: String){
+    private fun getDayOfWeekText(day: Int): String {
+        return when (day) {
+            1 -> "周一"
+            2 -> "周二"
+            3 -> "周三"
+            4 -> "周四"
+            5 -> "周五"
+            6 -> "周六"
+            7 -> "周日"
+            else -> "未知"
+        }
+    }
+
+    private fun setupPopupMenu(btnMore: ImageButton, courseId: Int, courseName: String) {
         btnMore.setOnClickListener { v ->
             val popup = PopupMenu(this, v)
             popup.menuInflater.inflate(R.menu.course_item_menu, popup.menu)
@@ -126,17 +147,74 @@ class CoursesSettingActivity : AppCompatActivity() {
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.menu_edit -> {
-                        // TODO: 跳转到编辑页
+                        showEditCourseDialog(courseId)
                         true
                     }
+
                     R.id.menu_delete -> {
-                        showDeleteConfirmDialog(courseId,courseName)
+                        showDeleteConfirmDialog(courseId, courseName)
                         true
                     }
+
                     else -> false
                 }
             }
             popup.show()
+        }
+    }
+
+    private fun showEditCourseDialog(courseId: Int) {
+        val db = dbHelper.readableDatabase
+
+        val cursor = db.query(
+            CourseDbHelper.TABLE_NAME,
+            null, "id = ?", arrayOf(courseId.toString()),
+            null, null, null
+        )
+
+        if (cursor.moveToFirst()) {
+            val name = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_NAME))
+            val startW = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_START_WEEK))
+            val endW = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_END_WEEK))
+            val day = cursor.getInt(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_DAY_OF_WEEK))
+            val time = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_COURSE_TIME))
+            val loc = cursor.getString(cursor.getColumnIndexOrThrow(CourseDbHelper.COL_COURSE_LOCATION))
+
+            val bundle = Bundle().apply {
+                putString("name", name)
+                putInt("startWeek", startW)
+                putInt("endWeek", endW)
+                putInt("dayOfWeek", day)
+                putString("timeRange", time)
+                putString("location", loc)
+            }
+
+            val dialog = AddCourseDialog(bundle) { newName, newStart, newEnd, newDay, newTime, newLoc ->
+                updateCourseInDb(courseId, newName, newStart, newEnd, newDay, newTime, newLoc)
+            }
+            dialog.show(supportFragmentManager, "EditCourseDialog")
+        }
+        cursor.close()
+    }
+
+    private fun updateCourseInDb(id: Int, name: String, start: Int, end: Int, day: Int, time: String, loc: String) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(CourseDbHelper.COL_NAME, name)
+            put(CourseDbHelper.COL_START_WEEK, start)
+            put(CourseDbHelper.COL_END_WEEK, end)
+            put(CourseDbHelper.COL_DAY_OF_WEEK, day)
+            put(CourseDbHelper.COL_COURSE_TIME, time)
+            put(CourseDbHelper.COL_COURSE_LOCATION, loc)
+        }
+
+        val rows = db.update(CourseDbHelper.TABLE_NAME, values, "id = ?", arrayOf(id.toString()))
+
+        if (rows > 0) {
+            Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show()
+            loadCoursesFromDb()
+        } else {
+            Toast.makeText(this, "修改失败", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -154,7 +232,7 @@ class CoursesSettingActivity : AppCompatActivity() {
                 arrayOf(courseId.toString())
             )
             if (deletedRows > 0) {
-                Toast.makeText(this, "已成功删除课程$courseName", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "已成功删除课程：$courseName", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "已删除课程 $courseId")
                 // 重新加载数据库并刷新列表，否则卡片还会留在屏幕上
                 loadCoursesFromDb()
@@ -165,9 +243,9 @@ class CoursesSettingActivity : AppCompatActivity() {
             dialog.dismiss()
         }
         builder.setNegativeButton("取消") { dialog, _ ->
-                dialog.dismiss() // 直接关闭对话框，不执行任何操作
-                Toast.makeText(this, "已取消删除课程$courseName", Toast.LENGTH_SHORT).show()
-                Log.d(TAG, "取消删除课程 $courseId")
+            dialog.dismiss() // 直接关闭对话框，不执行任何操作
+            Toast.makeText(this, "已取消删除课程：$courseName", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "取消删除课程 $courseId")
         }
         val alertDialog = builder.create()
 
@@ -178,16 +256,29 @@ class CoursesSettingActivity : AppCompatActivity() {
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED)
     }
 
-    private fun getDayOfWeekText(day: Int): String {
-        return when (day) {
-            1 -> "周一"
-            2 -> "周二"
-            3 -> "周三"
-            4 -> "周四"
-            5 -> "周五"
-            6 -> "周六"
-            7 -> "周日"
-            else -> "未知"
+    private fun setupAddCourseButton(){
+        val dialog = AddCourseDialog { name, start, end, day, time, loc ->
+            val db = dbHelper.writableDatabase
+            val values = ContentValues().apply {
+                put(CourseDbHelper.COL_NAME, name)
+                put(CourseDbHelper.COL_START_WEEK, start)
+                put(CourseDbHelper.COL_END_WEEK, end)
+                put(CourseDbHelper.COL_DAY_OF_WEEK, day)
+                put(CourseDbHelper.COL_COURSE_TIME, time)
+                put(CourseDbHelper.COL_COURSE_LOCATION, loc)
+            }
+
+            val newRowId = db.insert(TABLE_NAME, null, values)
+
+            if (newRowId != -1L) {
+                Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show()
+                loadCoursesFromDb() // 刷新列表，这样刚添加的卡片就会显示出来
+            } else {
+                Toast.makeText(this, "添加失败", Toast.LENGTH_SHORT).show()
+            }
         }
+
+        // 显示弹窗
+        dialog.show(supportFragmentManager, "AddCourseDialog")
     }
 }

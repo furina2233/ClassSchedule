@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:padding="20dp">
+    
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_add_course_dialog_title"
+            android:text="@string/add_course"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+    
+    <EditText
+            android:id="@+id/et_course_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/course_name"
+            android:inputType="text"/>
+    
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical">
+        
+        <Spinner
+                android:id="@+id/spinner_start_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/to"
+                android:layout_marginHorizontal="8dp"/>
+        
+        <Spinner
+                android:id="@+id/spinner_end_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+    </LinearLayout>
+    <Spinner
+            android:id="@+id/spinner_day_of_week"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:layout_marginTop="12dp"
+                  android:orientation="horizontal">
+        <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_start_lesson"
+                android:layout_weight="1"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/to"/>
+        <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner_end_lesson"
+                android:layout_weight="1"/>
+    </LinearLayout>
+    
+    <EditText
+            android:id="@+id/et_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/course_location1"
+            android:inputType="text"/>
+    
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="@string/save"
+            app:backgroundTint="@color/main_theme"
+            app:cornerRadius="20dp"/>
+</LinearLayout>
