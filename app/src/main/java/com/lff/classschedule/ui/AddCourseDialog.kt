@@ -2,27 +2,26 @@ package com.lff.classschedule.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.DialogFragment
-
-import com.lff.classschedule.R
+import android.widget.*
 import androidx.core.content.edit
+import androidx.fragment.app.DialogFragment
+import com.lff.classschedule.R
 import com.lff.classschedule.config.SchoolScheduleConfig
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.util.CourseTimeUtil
+import com.lff.classschedule.util.ScreenUtil
 
+// TODO:把AddCourseDialog的构造函数改为无参的，否则翻转手机时会出现RuntimeException
 class AddCourseDialog(
     private val initialCourse: Course? = null,
-    private val onSave: (course: Course) -> Unit) : DialogFragment() {
+    private val onSave: (course: Course) -> Unit
+) : DialogFragment() {
+
+    private val TAG = "AddCourseDialog"
 
     private lateinit var tvTitle: TextView
     private lateinit var etName: EditText
@@ -36,20 +35,11 @@ class AddCourseDialog(
 
     override fun onStart() {
         super.onStart()
-        // 获取对话框的窗口对象
-        dialog?.window?.let { window ->
-            // 设置宽度为屏幕宽度的 90% (或者其他比例)，高度自适应
-            val params = window.attributes
-            params.width = (resources.displayMetrics.widthPixels * 0.9).toInt()
-            params.height = android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-            window.attributes = params
-
-            // 可选：如果你想要圆角效果，通常需要设置背景为透明
-            // window.setBackgroundDrawableResource(android.R.color.transparent)
-        }
+        ScreenUtil.setDialogSize(this, requireContext(),0.9f)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // 手动加载布局
         return inflater.inflate(R.layout.dialog_add_course, container, false)
@@ -128,20 +118,23 @@ class AddCourseDialog(
             }
 
             val timeRange = CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
-                requireContext(), startLessonIdx+1, endLessonIdx+1)
+                requireContext(), startLessonIdx + 1, endLessonIdx + 1
+            )
             if (timeRange == "") {
                 Toast.makeText(context, "请检查课程时间设置", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             // 回调给 Activity 执行数据库插入
-            val course = Course(name, startWeek, endWeek, dayOfWeek, startLessonIdx+1, endLessonIdx+1, location)
+            val course = Course(name, startWeek, endWeek, dayOfWeek, startLessonIdx + 1, endLessonIdx + 1, location)
             onSave(course)
             dismiss()
         }
 
         // 如果是修改课程，则填充已有数据
         initialCourse?.let { preFillData(it) }
+
+        Log.d(TAG,"添加课程窗口加载完成")
     }
 
     private fun preFillData(course: Course) {
@@ -157,5 +150,7 @@ class AddCourseDialog(
         spDay.setSelection(course.dayOfWeek - 1)
         spStartLesson.setSelection(course.startLesson - 1)
         spEndLesson.setSelection(course.endLesson - 1)
+
+        Log.d(TAG,"修改课程模式下，已填充课程数据")
     }
 }

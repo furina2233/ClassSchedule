@@ -10,12 +10,33 @@
         tools:context=".CoursesSettingActivity">
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                   android:orientation="vertical">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:text="@string/course_settings"
-                  android:gravity="center"
-                  android:textSize="20sp"
-                  android:layout_marginTop="15dp"
-                  android:textColor="@color/title_text" tools:ignore="MissingConstraints"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+            <TextView
+                    android:id="@+id/tv_course_setting_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/course_settings"
+                    android:textSize="20sp"
+                    android:textColor="@color/title_text"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            <ImageButton
+                    android:id="@+id/btn_course_setting"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_more_horiz"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_course_setting_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_course_setting_title"
+                    app:tint="@color/gray" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 <!--        放置课程卡片的容器-->
         <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
                     android:id="@+id/sv_courses" tools:ignore="MissingConstraints">

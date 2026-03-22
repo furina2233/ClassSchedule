@@ -7,19 +7,17 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.PopupMenu
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.lff.classschedule.config.SchoolScheduleConfig
 import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.database.CourseDbHelper.Companion.TABLE_NAME
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.ui.AddCourseDialog
+import com.lff.classschedule.ui.CustomSchoolScheduleDialog
 import com.lff.classschedule.util.CourseTimeUtil
 
 class CoursesSettingActivity : AppCompatActivity() {
@@ -29,6 +27,7 @@ class CoursesSettingActivity : AppCompatActivity() {
     private lateinit var dbHelper: CourseDbHelper
 
     private lateinit var btnAddCourse: FloatingActionButton
+    private lateinit var btnCourseSetting: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +72,86 @@ class CoursesSettingActivity : AppCompatActivity() {
         btnAddCourse.setOnClickListener {
             setupAddCourseButton()
         }
+
+        btnCourseSetting = findViewById(R.id.btn_course_setting)
+        btnCourseSetting.setOnClickListener {
+            setupCourseSettingButton()
+        }
+
+        syncCoursesMaxWeeksIfNeed()
+    }
+
+    private fun syncCoursesMaxWeeksIfNeed() {
+        supportFragmentManager.setFragmentResultListener(CustomSchoolScheduleDialog.TAG, this) { _, bundle ->
+            val db = dbHelper.writableDatabase
+            val needSync = bundle.getBoolean("need_sync")
+            val newMaxWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(this)
+            val oldMaxWeeks = bundle.getInt("old_max_weeks")
+
+            val values = ContentValues()
+
+            if (newMaxWeeks > oldMaxWeeks) {
+                // 如果学期变长了，只有在用户点“好的”的情况下才同步
+                if (needSync) {
+                    values.put(CourseDbHelper.COL_END_WEEK, newMaxWeeks)
+                    val rows = db.update(
+                        TABLE_NAME,
+                        values,
+                        "${CourseDbHelper.COL_END_WEEK} = ?",
+                        arrayOf(oldMaxWeeks.toString())
+                    )
+                    Toast.makeText(this, "已同步课程的持续时长", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "学期变长：已将 $rows 门全学期课程更新至 $newMaxWeeks 周")
+                }
+            } else {
+                // 如果学期变短了，则强制更新所有持续到超出当前总周数的课程的持续时长
+                values.put(CourseDbHelper.COL_END_WEEK, newMaxWeeks)
+                val rows = db.update(
+                    TABLE_NAME,
+                    values,
+                    "${CourseDbHelper.COL_END_WEEK} > ?",
+                    arrayOf(newMaxWeeks.toString())
+                )
+                Log.d(TAG, "学期变短：已强制修正 $rows 门溢出课程的持续时长")
+            }
+            loadCoursesFromDb()
+        }
+    }
+
+    private fun setupCourseSettingButton() {
+        val popup = PopupMenu(this, btnCourseSetting)
+        popup.menuInflater.inflate(R.menu.course_setting_menu, popup.menu)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_batch_add -> {
+                    TODO("批量添加课程")
+                    true
+                }
+
+                R.id.menu_batch_delete -> {
+                    TODO("批量删除课程")
+                    true
+                }
+
+                R.id.menu_custom_school_schedule -> {
+                    setCustomSchoolSchedule()
+                    true
+                }
+
+                R.id.menu_set_start_times -> {
+                    TODO("设置每节课上课时间")
+                    true
+                }
+
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
+    private fun setCustomSchoolSchedule() {
+        val dialog = CustomSchoolScheduleDialog()
+        dialog.show(supportFragmentManager, "CustomSchoolScheduleDialog")
     }
 
     private fun loadCoursesFromDb() {
@@ -144,10 +223,12 @@ class CoursesSettingActivity : AppCompatActivity() {
                         showEditCourseDialog(courseId, course) // 优化：直接把已有对象传过去，不用再查数据库
                         true
                     }
+
                     R.id.menu_delete -> {
                         showDeleteConfirmDialog(courseId, course.name) // 使用对象的属性
                         true
                     }
+
                     else -> false
                 }
             }

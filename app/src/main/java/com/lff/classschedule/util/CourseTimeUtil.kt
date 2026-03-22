@@ -2,7 +2,6 @@ package com.lff.classschedule.util
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import com.lff.classschedule.config.SchoolScheduleConfig
 
 object CourseTimeUtil {
@@ -14,11 +13,11 @@ object CourseTimeUtil {
         val startTimes = SchoolScheduleConfig.getStartTimes(context)
 
         try {
-            val startTime = startTimes[startIndex-1]
-            val lastLessonStartTime = startTimes[endIndex-1]
+            val startTime = startTimes[startIndex - 1]
+            val lastLessonStartTime = startTimes[endIndex - 1]
             val endTime = calculateEndTime(lastLessonStartTime, duration)
             return "$startTime-$endTime"
-        }catch (e: IndexOutOfBoundsException){
+        } catch (e: IndexOutOfBoundsException) {
             // Toast.makeText(context, "请检查课程时间设置", Toast.LENGTH_SHORT).show()
             Log.e(TAG, "请检查课程时间设置", e)
             return ""

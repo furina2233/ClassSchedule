@@ -27,7 +27,7 @@ object SchoolScheduleConfig {
     fun getMaxLessonsPerDay(context: Context): Int =
         cachedMaxLessons ?: getPrefs(context).getInt(KEY_MAX_LESSONS, 13).also { cachedMaxLessons = it }
 
-    fun setMaxLessonsPerDay(context: Context, value: Int){
+    fun setMaxLessonsPerDay(context: Context, value: Int) {
         cachedMaxLessons = value
         getPrefs(context).edit { putInt(KEY_MAX_LESSONS, value) }
     }
@@ -35,7 +35,7 @@ object SchoolScheduleConfig {
     fun getDurationPerLesson(context: Context): Int =
         cachedDuration ?: getPrefs(context).getInt(KEY_DURATION, 45)
 
-    fun setDurationPerLesson(context: Context, value: Int){
+    fun setDurationPerLesson(context: Context, value: Int) {
         cachedDuration = value
         getPrefs(context).edit { putInt(KEY_DURATION, value) }
     }
@@ -43,7 +43,21 @@ object SchoolScheduleConfig {
     fun getStartTimes(context: Context): Array<String> {
         val prefs = getPrefs(context)
         return prefs.getString("start_times_csv", null)?.split(",")?.toTypedArray()
-            ?: arrayOf("08:00", "08:50", "09:50", "10:40", "11:30", "14:00", "14:50", "15:50", "16:40", "17:30", "19:00", "19:50", "20:40")
+            ?: arrayOf(
+                "08:00",
+                "08:50",
+                "09:50",
+                "10:40",
+                "11:30",
+                "14:00",
+                "14:50",
+                "15:50",
+                "16:40",
+                "17:30",
+                "19:00",
+                "19:50",
+                "20:40"
+            )
     }
 
     fun setStartTimes(context: Context, startTimes: Array<String>) {

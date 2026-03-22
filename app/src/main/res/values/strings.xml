@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ClassSchedule</string>
+    <string name="app_name">课程表</string>
     <string name="go">开始使用</string>
     <string name="skip">跳过</string>
     <string name="course_settings">课程设置</string>
@@ -19,4 +19,16 @@
     <string name="select_time">选择时间段</string>
     <string name="save">保存</string>
     <string name="course_location1">上课地点</string>
+    <string name="modify">修改</string>
+    <string name="delete">删除</string>
+    <string name="batch_add">批量新增课程</string>
+    <string name="batch_delete">批量删除课程</string>
+    <string name="custom_school_schedule">自定义学期信息</string>
+    <string name="set_start_times">设置每节课的上课时间</string>
+    <string name="max_weeks">总周数：</string>
+    <string name="set_max_weeks_hint">每个学期的周数</string>
+    <string name="max_lessons_per_day">课程数：</string>
+    <string name="set_max_lessons_per_day_hint">每天的课程数</string>
+    <string name="duration_per_lesson">课程时长：</string>
+    <string name="set_duration_per_lesson_hint">每节课的时长</string>
 </resources>
