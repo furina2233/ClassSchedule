@@ -124,6 +124,7 @@ class CustomSchoolScheduleDialog
             clearCache()
         }
         Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show()
+        Log.d(TAG,"保存新学期信息成功，最大周数：$currentMaxWeeks，每天最大课程数：$currentMaxLessonsPerDay，课程时长：$currentDurationPerLesson")
     }
 
     private fun preFillData() {

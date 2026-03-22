@@ -1,6 +1,7 @@
 package com.lff.classschedule.ui
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,16 +13,29 @@ import androidx.fragment.app.DialogFragment
 import com.lff.classschedule.R
 import com.lff.classschedule.config.SchoolScheduleConfig
 import com.lff.classschedule.pojo.Course
+import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.ScreenUtil
 
 // TODO:把AddCourseDialog的构造函数改为无参的，否则翻转手机时会出现RuntimeException
-class AddCourseDialog(
-    private val initialCourse: Course? = null,
-    private val onSave: (course: Course) -> Unit
-) : DialogFragment() {
+class AddCourseDialog: DialogFragment() {
 
-    private val TAG = "AddCourseDialog"
+    companion object{
+        const val TAG = "AddCourseDialog"
+
+        fun newInstance(): AddCourseDialog {
+            return AddCourseDialog()
+        }
+        fun newInstance(course: Course? = null): AddCourseDialog {
+            val fragment = AddCourseDialog()
+            course?.let {
+                fragment.arguments = Bundle().apply {
+                    putParcelable("course", it)
+                }
+            }
+            return fragment
+        }
+    }
 
     private lateinit var tvTitle: TextView
     private lateinit var etName: EditText
@@ -103,7 +117,7 @@ class AddCourseDialog(
             val startLessonIdx = spStartLesson.selectedItemPosition
             val endLessonIdx = spEndLesson.selectedItemPosition
 
-            // TODO:后面需要修改
+            // 校验数据
             if (name.isEmpty()) {
                 Toast.makeText(context, "请输入课程名称", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -127,17 +141,22 @@ class AddCourseDialog(
 
             // 回调给 Activity 执行数据库插入
             val course = Course(name, startWeek, endWeek, dayOfWeek, startLessonIdx + 1, endLessonIdx + 1, location)
-            onSave(course)
+            parentFragmentManager.setFragmentResult(TAG, Bundle().apply {
+                putParcelable("course", course)
+            })
             dismiss()
         }
 
-        // 如果是修改课程，则填充已有数据
-        initialCourse?.let { preFillData(it) }
+        preFillData()  // 填充数据，如果是新增模式，则自动返回
 
         Log.d(TAG,"添加课程窗口加载完成")
     }
 
-    private fun preFillData(course: Course) {
+    // 如果是编辑模式，则填充数据
+    private fun preFillData() {
+        val course = arguments?.
+            let { CompatibilityUtil.getParcelableCourse(it) } ?: return
+
         val totalWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(requireContext()) // 获取当前设定的总周数
 
         tvTitle.text = "修改课程"

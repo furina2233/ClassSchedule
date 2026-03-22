@@ -18,6 +18,7 @@ import com.lff.classschedule.database.CourseDbHelper.Companion.TABLE_NAME
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.ui.AddCourseDialog
 import com.lff.classschedule.ui.CustomSchoolScheduleDialog
+import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
 
 class CoursesSettingActivity : AppCompatActivity() {
@@ -237,9 +238,16 @@ class CoursesSettingActivity : AppCompatActivity() {
     }
 
     private fun showEditCourseDialog(courseId: Int, course: Course) {
-        val dialog = AddCourseDialog(course) { updatedCourse ->
-            updateCourseInDb(courseId, updatedCourse)
-        }
+        val dialog = AddCourseDialog.newInstance(course)
+        supportFragmentManager.setFragmentResultListener(AddCourseDialog.TAG, this) {
+            _, bundle ->
+                val updatedCourse = CompatibilityUtil.getParcelableCourse(bundle)
+                if (updatedCourse != null) {
+                    updateCourseInDb(courseId, updatedCourse)
+                    loadCoursesFromDb()
+                }
+            }
+
         dialog.show(supportFragmentManager, "EditCourseDialog")
     }
 
@@ -308,8 +316,13 @@ class CoursesSettingActivity : AppCompatActivity() {
     }
 
     private fun setupAddCourseButton() {
-        val dialog = AddCourseDialog { course ->
-            saveCourseToDb(course)
+        val dialog = AddCourseDialog.newInstance()
+        supportFragmentManager.setFragmentResultListener(AddCourseDialog.TAG, this){
+            _, bundle ->
+            val course = CompatibilityUtil.getParcelableCourse(bundle)
+            if (course != null) {
+                saveCourseToDb(course)
+            }
         }
         dialog.show(supportFragmentManager, "AddCourseDialog")
     }
