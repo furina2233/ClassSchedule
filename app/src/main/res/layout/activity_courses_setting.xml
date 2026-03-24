@@ -24,7 +24,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"/>
             <ImageButton
                     android:id="@+id/btn_course_setting"
                     android:layout_width="48dp"
@@ -35,9 +35,9 @@
                     app:layout_constraintBottom_toBottomOf="@id/tv_course_setting_title"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/tv_course_setting_title"
-                    app:tint="@color/gray" />
+                    app:tint="@color/gray"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
-<!--        放置课程卡片的容器-->
+        <!--        放置课程卡片的容器-->
         <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
                     android:id="@+id/sv_courses" tools:ignore="MissingConstraints">
             <LinearLayout
@@ -45,7 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="10dp" >
+                    android:padding="10dp">
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
@@ -59,14 +59,14 @@
               app:layout_constraintTop_toTopOf="parent"
               app:layout_constraintBottom_toBottomOf="parent"
               app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintEnd_toEndOf="parent" />
+              app:layout_constraintEnd_toEndOf="parent"/>
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:visibility="invisible"
-            app:layout_constraintGuide_end="80dp" />
+            app:layout_constraintGuide_end="80dp"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add_course"
             style="@style/Widget.Material3.FloatingActionButton.Primary"

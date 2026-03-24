@@ -18,6 +18,7 @@ import com.lff.classschedule.database.CourseDbHelper.Companion.TABLE_NAME
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.ui.AddCourseDialog
 import com.lff.classschedule.ui.CustomSchoolScheduleDialog
+import com.lff.classschedule.ui.SetStartTimesDialog
 import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
 
@@ -140,7 +141,7 @@ class CoursesSettingActivity : AppCompatActivity() {
                 }
 
                 R.id.menu_set_start_times -> {
-                    TODO("设置每节课上课时间")
+                    setStartTimes()
                     true
                 }
 
@@ -148,6 +149,17 @@ class CoursesSettingActivity : AppCompatActivity() {
             }
         }
         popup.show()
+    }
+
+    private fun setStartTimes() {
+        val dialog = SetStartTimesDialog()
+        dialog.show(supportFragmentManager, "SetStartTimesDialog")
+        supportFragmentManager.setFragmentResultListener(SetStartTimesDialog.TAG, this) { _, bundle ->
+            val newStartTimes = bundle.getStringArray("new_start_times")
+            newStartTimes?.let { SchoolScheduleConfig.setStartTimes(this, it) }
+            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "已保存新的课程开始时间：${newStartTimes?.joinToString(",")}")
+        }
     }
 
     private fun setCustomSchoolSchedule() {
@@ -221,12 +233,12 @@ class CoursesSettingActivity : AppCompatActivity() {
             popup.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.menu_edit -> {
-                        showEditCourseDialog(courseId, course) // 优化：直接把已有对象传过去，不用再查数据库
+                        showEditCourseDialog(courseId, course)
                         true
                     }
 
                     R.id.menu_delete -> {
-                        showDeleteConfirmDialog(courseId, course.name) // 使用对象的属性
+                        showDeleteConfirmDialog(courseId, course.name)
                         true
                     }
 
@@ -239,14 +251,13 @@ class CoursesSettingActivity : AppCompatActivity() {
 
     private fun showEditCourseDialog(courseId: Int, course: Course) {
         val dialog = AddCourseDialog.newInstance(course)
-        supportFragmentManager.setFragmentResultListener(AddCourseDialog.TAG, this) {
-            _, bundle ->
-                val updatedCourse = CompatibilityUtil.getParcelableCourse(bundle)
-                if (updatedCourse != null) {
-                    updateCourseInDb(courseId, updatedCourse)
-                    loadCoursesFromDb()
-                }
+        supportFragmentManager.setFragmentResultListener(AddCourseDialog.TAG, this) { _, bundle ->
+            val updatedCourse = CompatibilityUtil.getParcelableCourse(bundle)
+            if (updatedCourse != null) {
+                updateCourseInDb(courseId, updatedCourse)
+                loadCoursesFromDb()
             }
+        }
 
         dialog.show(supportFragmentManager, "EditCourseDialog")
     }
@@ -317,8 +328,7 @@ class CoursesSettingActivity : AppCompatActivity() {
 
     private fun setupAddCourseButton() {
         val dialog = AddCourseDialog.newInstance()
-        supportFragmentManager.setFragmentResultListener(AddCourseDialog.TAG, this){
-            _, bundle ->
+        supportFragmentManager.setFragmentResultListener(AddCourseDialog.TAG, this) { _, bundle ->
             val course = CompatibilityUtil.getParcelableCourse(bundle)
             if (course != null) {
                 saveCourseToDb(course)

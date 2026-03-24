@@ -1,7 +1,6 @@
 package com.lff.classschedule.ui
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,14 +17,15 @@ import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.ScreenUtil
 
 // TODO:把AddCourseDialog的构造函数改为无参的，否则翻转手机时会出现RuntimeException
-class AddCourseDialog: DialogFragment() {
+class AddCourseDialog : DialogFragment() {
 
-    companion object{
+    companion object {
         const val TAG = "AddCourseDialog"
 
         fun newInstance(): AddCourseDialog {
             return AddCourseDialog()
         }
+
         fun newInstance(course: Course? = null): AddCourseDialog {
             val fragment = AddCourseDialog()
             course?.let {
@@ -49,7 +49,7 @@ class AddCourseDialog: DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        ScreenUtil.setDialogSize(this, requireContext(),0.9f)
+        ScreenUtil.setDialogWidth(this, requireContext(), 0.9f)
     }
 
     override fun onCreateView(
@@ -149,13 +149,12 @@ class AddCourseDialog: DialogFragment() {
 
         preFillData()  // 填充数据，如果是新增模式，则自动返回
 
-        Log.d(TAG,"添加课程窗口加载完成")
+        Log.d(TAG, "添加课程窗口加载完成")
     }
 
     // 如果是编辑模式，则填充数据
     private fun preFillData() {
-        val course = arguments?.
-            let { CompatibilityUtil.getParcelableCourse(it) } ?: return
+        val course = arguments?.let { CompatibilityUtil.getParcelableCourse(it) } ?: return
 
         val totalWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(requireContext()) // 获取当前设定的总周数
 
@@ -170,6 +169,6 @@ class AddCourseDialog: DialogFragment() {
         spStartLesson.setSelection(course.startLesson - 1)
         spEndLesson.setSelection(course.endLesson - 1)
 
-        Log.d(TAG,"修改课程模式下，已填充课程数据")
+        Log.d(TAG, "修改课程模式下，已填充课程数据")
     }
 }

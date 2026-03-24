@@ -6,7 +6,7 @@
     
     <stroke
             android:width="2dp"
-            android:color="@color/bg_course_card"/>
+            android:color="@color/main_theme"/>
     <corners android:radius="12dp"/>
     
     <padding

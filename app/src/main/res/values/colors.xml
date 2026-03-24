@@ -11,5 +11,6 @@
     <color name="translucent_black">#80000000</color>
     <color name="title_text">#1C1B1F</color>
     <color name="gray">#808080</color>
+    <color name="light_gray">#B0B0B0</color>
     <color name="bg_course_card">#DEDEDE</color>
 </resources>

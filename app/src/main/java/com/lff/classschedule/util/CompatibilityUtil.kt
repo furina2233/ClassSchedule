@@ -5,10 +5,10 @@ import android.os.Bundle
 import com.lff.classschedule.pojo.Course
 
 object CompatibilityUtil {
-    fun getParcelableCourse(bundle: Bundle): Course?{
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+    fun getParcelableCourse(bundle: Bundle): Course? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return bundle.getParcelable("course", Course::class.java)
-        }else{
+        } else {
             return bundle.getParcelable("course")
         }
     }
