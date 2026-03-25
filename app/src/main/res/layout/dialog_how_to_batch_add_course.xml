@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent" android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="20dp"
+              android:layout_marginBottom="16dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+        
+        <TextView
+                android:id="@+id/tv_add_course_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/how_to_batch_add_course"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_click_to_copy"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/click_to_copy"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:paddingHorizontal="10dp"
+                android:minHeight="32dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                app:cornerRadius="20dp"
+                app:strokeColor="@color/main_theme"
+                app:strokeWidth="1.5dp"
+                app:backgroundTint="@color/white"
+                app:rippleColor="#20000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_add_course_dialog_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_add_course_dialog_title"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:text="@string/introduction_to_how_to_batch_add_course"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:gravity="center">
+        
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_batch_input"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint=""
+                app:boxStrokeColor="@color/main_theme"
+                app:hintTextColor="@color/light_gray">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_batch_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:gravity="top"
+                    android:text="@string/prompt"
+                    android:inputType="none"
+                    android:textIsSelectable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:scrollbars="vertical" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView android:layout_width="match_parent" android:layout_height="50dp"/>
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_i_got_it"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/i_got_it"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:paddingHorizontal="10dp"
+                android:minHeight="40dp"
+                android:insetTop="5dp"
+                android:insetBottom="0dp"
+                app:cornerRadius="20dp"
+                app:strokeColor="@color/main_theme"
+                app:strokeWidth="1.5dp"
+                app:backgroundTint="@color/white"
+                app:iconTint="@color/main_theme"
+                app:rippleColor="#20000000"
+                app:layout_constraintTop_toTopOf="@id/tv_dialog_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_dialog_title"
+                app:layout_constraintEnd_toEndOf="parent"/>
+    </LinearLayout>
+</LinearLayout>

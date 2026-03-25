@@ -50,4 +50,20 @@ object ScreenUtil {
             }
         }
     }
+
+    fun setDialogHeight(dialog: DialogFragment, context: Context, ratio: Float) {
+        val window = dialog.dialog?.window
+        val root = dialog.view
+
+        window?.let {
+            val displayMetrics = context.resources.displayMetrics
+            val height = (displayMetrics.heightPixels * ratio).toInt()
+
+            root?.post {
+                val params = root.layoutParams
+                params.height = height
+                root.layoutParams = params
+            }
+        }
+    }
 }

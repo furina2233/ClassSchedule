@@ -17,6 +17,7 @@ import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.database.CourseDbHelper.Companion.TABLE_NAME
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.ui.AddCourseDialog
+import com.lff.classschedule.ui.BatchAddCourseDialog
 import com.lff.classschedule.ui.CustomSchoolScheduleDialog
 import com.lff.classschedule.ui.SetStartTimesDialog
 import com.lff.classschedule.util.CompatibilityUtil
@@ -126,7 +127,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_batch_add -> {
-                    TODO("批量添加课程")
+                    batchAddCourse()
                     true
                 }
 
@@ -149,6 +150,23 @@ class CoursesSettingActivity : AppCompatActivity() {
             }
         }
         popup.show()
+    }
+
+    private fun batchAddCourse() {
+        //TODO:升级为在Activity中进行操作
+        val dialog = BatchAddCourseDialog()
+        dialog.show(supportFragmentManager, "BatchAddCourseDialog")
+
+        supportFragmentManager.setFragmentResultListener(BatchAddCourseDialog.TAG, this) { _, bundle ->
+            val courseList = CompatibilityUtil.getParcelableCourseList(bundle)
+            if (courseList != null) {
+                for (course in courseList) {
+                    saveCourseToDb(course)
+                    Log.d(TAG, "已添加课程：$course")
+                }
+            }
+        }
+        loadCoursesFromDb()
     }
 
     private fun setStartTimes() {

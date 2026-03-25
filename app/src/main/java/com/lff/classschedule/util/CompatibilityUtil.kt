@@ -12,4 +12,12 @@ object CompatibilityUtil {
             return bundle.getParcelable("course")
         }
     }
+
+    fun getParcelableCourseList(bundle: Bundle): List<Course>? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return bundle.getParcelableArrayList("course_list", Course::class.java)
+        } else {
+            return bundle.getParcelableArrayList("course_list")
+        }
+    }
 }
