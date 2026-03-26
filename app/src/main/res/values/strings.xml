@@ -47,4 +47,6 @@
         在你的学校教务系统课程表界面中截图（或截长图），然后把以下提示词和图片一起发给AI，即可获取对应的JSON数组。
     </string>
     <string name="click_to_copy">一键复制</string>
+    <string name="confirm_delete">确认删除</string>
+    <string name="select_all">全选</string>
 </resources>

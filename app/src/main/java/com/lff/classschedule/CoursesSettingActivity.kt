@@ -8,9 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.children
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lff.classschedule.config.SchoolScheduleConfig
 import com.lff.classschedule.database.CourseDbHelper
@@ -31,6 +34,11 @@ class CoursesSettingActivity : AppCompatActivity() {
 
     private lateinit var btnAddCourse: FloatingActionButton
     private lateinit var btnCourseSetting: ImageButton
+
+    private lateinit var llCourseList: LinearLayout
+    private lateinit var llBatchDeleteBar: LinearLayout
+
+    private lateinit var batchDeleteBackPressedCallback: OnBackPressedCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,6 +90,30 @@ class CoursesSettingActivity : AppCompatActivity() {
         }
 
         syncCoursesMaxWeeksIfNeed()
+
+        llCourseList = findViewById(R.id.ll_course_list)
+        llBatchDeleteBar = findViewById(R.id.ll_batch_delete_bar)
+
+        batchDeleteBackPressedCallback = onBackPressedDispatcher.addCallback(this, false) {
+            exitBatchDeleteMode()
+        }
+    }
+
+    private fun exitBatchDeleteMode() {
+        llBatchDeleteBar.visibility = View.GONE
+        btnCourseSetting.visibility = View.VISIBLE
+
+        btnAddCourse.show()
+
+        for (item in llCourseList.children) {
+            item.findViewById<ImageButton>(R.id.btn_delete).visibility = View.GONE
+            item.findViewById<ConstraintLayout>(R.id.cl_card).setBackgroundResource(R.drawable.bg_course_card)
+            item.findViewById<ImageButton>(R.id.btn_delete).tag = false
+        }
+
+        batchDeleteBackPressedCallback.isEnabled = false
+
+        Log.d(TAG, "已通过返回键取消批量删除模式")
     }
 
     private fun syncCoursesMaxWeeksIfNeed() {
@@ -132,7 +164,7 @@ class CoursesSettingActivity : AppCompatActivity() {
                 }
 
                 R.id.menu_batch_delete -> {
-                    TODO("批量删除课程")
+                    batchDeleteCourse()
                     true
                 }
 
@@ -150,6 +182,134 @@ class CoursesSettingActivity : AppCompatActivity() {
             }
         }
         popup.show()
+    }
+
+    private fun batchDeleteCourse() {
+        btnCourseSetting.visibility = View.INVISIBLE
+        batchDeleteBackPressedCallback.isEnabled = true
+
+        val toDeleteCourseList = mutableSetOf<String>()
+
+        val cbSelectAll = llBatchDeleteBar.findViewById<CheckBox>(R.id.cb_select_all)
+        val btnConfirmDelete = llBatchDeleteBar.findViewById<Button>(R.id.btn_confirm_delete)
+
+        for (item in llCourseList.children){
+            val btnDelete = item.findViewById<ImageButton>(R.id.btn_delete).apply {
+                visibility = View.VISIBLE
+            }
+            val clCard = item.findViewById<ConstraintLayout>(R.id.cl_card)
+
+            btnDelete.setOnClickListener {
+                val isSelected = it.tag as? Boolean ?: false
+                if (!isSelected){
+                    clCard.setBackgroundResource(R.drawable.bg_to_delete_course_card)
+                    toDeleteCourseList.add(clCard.tag.toString())
+                    it.tag = true
+                }else{
+                    clCard.setBackgroundResource(R.drawable.bg_course_card)
+                    toDeleteCourseList.remove(clCard.tag.toString())
+                    it.tag = false
+                }
+                cbSelectAll.setOnCheckedChangeListener(null)
+                cbSelectAll.isChecked = toDeleteCourseList.size == llCourseList.childCount
+                setupSelectAllListener(cbSelectAll)
+            }
+        }
+
+        llBatchDeleteBar.visibility = View.VISIBLE
+
+        setupSelectAllListener(cbSelectAll)
+
+        btnConfirmDelete.setOnClickListener {
+            val toDeleteCoursesMap = mutableMapOf<Int, String>()
+
+            // 记录要删除的课程的名字
+            for (item in llCourseList.children) {
+                val btnDelete = item.findViewById<ImageButton>(R.id.btn_delete)
+                val isSelected = btnDelete.tag as? Boolean ?: false
+
+                if (isSelected) {
+                    val courseName = item.findViewById<TextView>(R.id.tv_course_name).text.toString()
+                    val courseId = item.findViewById<ConstraintLayout>(R.id.cl_card).tag.toString()
+                    toDeleteCoursesMap[courseId.toInt()] = courseName
+                }
+            }
+
+            if (toDeleteCoursesMap.isEmpty()) return@setOnClickListener
+
+            showBatchDeleteConfirmDialog(toDeleteCoursesMap)
+        }
+    }
+
+    private fun showBatchDeleteConfirmDialog(toDeleteCoursesMap: Map<Int, String>) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("删除多门课程")
+
+        // 用滚动视图展示，防止要删除的课程过多导致挤不下
+        val scrollView = ScrollView(this)
+        val textView = TextView(this).apply {
+            val message = StringBuilder("确定删除以下课程吗？\n")
+            toDeleteCoursesMap.values.forEach { message.append("\n· $it") }
+            text = message.toString()
+            setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16f)
+            setLineSpacing(0f, 1.2f)
+
+            setPadding(60, 40, 60, 0)
+        }
+        scrollView.addView(textView)
+
+        val maxHeight = (resources.displayMetrics.heightPixels * 0.5).toInt()
+        scrollView.post {
+            if (scrollView.measuredHeight > maxHeight) {
+                val params = scrollView.layoutParams
+                params.height = maxHeight
+                scrollView.layoutParams = params
+            }
+        }
+
+        builder.setView(scrollView)
+
+        builder.setPositiveButton("确定删除") { dialog, _ ->
+            val db = dbHelper.writableDatabase
+            db.beginTransaction()
+            try {
+                for (courseId in toDeleteCoursesMap.keys) {
+                    if (deleteCourseFromDb(courseId)) {
+                        Log.d(TAG, "已删除：${toDeleteCoursesMap[courseId]} (ID:$courseId)")
+                    }
+                }
+                db.setTransactionSuccessful()
+                Toast.makeText(this, "成功删除 ${toDeleteCoursesMap.size} 门课程", Toast.LENGTH_SHORT).show()
+            } finally {
+                db.endTransaction()
+                llBatchDeleteBar.visibility = View.GONE
+                btnCourseSetting.visibility = View.VISIBLE
+                loadCoursesFromDb()
+            }
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("取消") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED)
+    }
+
+    private fun setupSelectAllListener(cbSelectAll: CheckBox) {
+        cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
+            for (item in llCourseList.children) {
+                val btnDelete = item.findViewById<ImageButton>(R.id.btn_delete)
+                val isSelected = btnDelete.tag as? Boolean ?: false
+
+                // 如果当前的选中状态和全选框的选中状态不一致，则触发点击事件
+                if (isSelected != isChecked) {
+                    btnDelete.performClick()
+                }
+            }
+        }
     }
 
     private fun batchAddCourse() {
@@ -214,6 +374,8 @@ class CoursesSettingActivity : AppCompatActivity() {
 
                 // 加载卡片布局
                 val itemView = LayoutInflater.from(this).inflate(R.layout.item_course_card, container, false)
+
+                itemView.findViewById<ConstraintLayout>(R.id.cl_card).tag = id.toString()  // 把卡片绑定数据库id
 
                 val btnMore = itemView.findViewById<ImageButton>(R.id.btn_more)
                 setupPopupMenu(btnMore, id, course)
@@ -313,13 +475,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         builder.setMessage("确定要删除“$courseName”吗？此操作不可撤销。")
 
         builder.setPositiveButton("删除") { dialog, _ ->
-            val db = dbHelper.writableDatabase
-            val deletedRows = db.delete(
-                CourseDbHelper.TABLE_NAME,
-                "id = ?",
-                arrayOf(courseId.toString())
-            )
-            if (deletedRows > 0) {
+            if (deleteCourseFromDb(courseId)) {
                 Toast.makeText(this, "已成功删除课程：$courseName", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "已删除课程 $courseId")
                 // 重新加载数据库并刷新列表，否则卡片还会留在屏幕上
@@ -363,6 +519,21 @@ class CoursesSettingActivity : AppCompatActivity() {
             loadCoursesFromDb()
         } else {
             Toast.makeText(this, "添加失败", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun deleteCourseFromDb(courseId: Int): Boolean {
+        val db = dbHelper.writableDatabase
+        return try {
+            val deletedRows = db.delete(
+                CourseDbHelper.TABLE_NAME,
+                "id = ?",
+                arrayOf(courseId.toString())
+            )
+            deletedRows > 0
+        } catch (e: Exception) {
+            Log.e(TAG, "删除课程 $courseId 时发生异常: ${e.message}")
+            false
         }
     }
 }
