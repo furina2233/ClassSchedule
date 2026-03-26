@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/how_to_batch_add_course"
-                android:textColor="@color/main_theme" />
+                android:textColor="@color/main_theme"/>
         <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_batch_input"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -38,7 +38,7 @@
                     android:layout_height="300dp"
                     android:gravity="top"
                     android:inputType="textMultiLine"
-                    android:scrollbars="vertical" />
+                    android:scrollbars="vertical"/>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"

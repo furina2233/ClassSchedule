@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp" />
+                android:padding="10dp"/>
     </ScrollView>
     
     <LinearLayout
@@ -76,7 +76,7 @@
         <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"/>
         
         <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_confirm_delete"
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/confirm_delete"
                 android:textColor="@color/red"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
     </LinearLayout>
     
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -119,6 +119,6 @@
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
             app:elevation="6dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/guideline_bottom" />
+            app:layout_constraintBottom_toTopOf="@id/guideline_bottom"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

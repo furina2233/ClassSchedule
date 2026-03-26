@@ -1,6 +1,7 @@
 package com.lff.classschedule.ui
 
 import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,12 +12,12 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.lff.classschedule.R
 import com.lff.classschedule.util.ScreenUtil
-import android.content.ClipboardManager
 
 class HowToBatchAddCourseDialog : DialogFragment() {
     companion object {
         const val TAG = "HowToBatchAddCourseDialog"
     }
+
     private lateinit var btnIGotIt: MaterialButton
     private lateinit var btnClickToCopy: MaterialButton
 
@@ -53,7 +54,7 @@ class HowToBatchAddCourseDialog : DialogFragment() {
 
                 Toast.makeText(requireContext(), "复制成功", Toast.LENGTH_SHORT).show()
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Toast.makeText(requireContext(), "复制失败", Toast.LENGTH_SHORT).show()
         }
     }

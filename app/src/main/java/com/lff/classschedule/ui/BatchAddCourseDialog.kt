@@ -56,7 +56,7 @@ class BatchAddCourseDialog : DialogFragment() {
 
     }
 
-    private fun onBtnSaveClicked(){
+    private fun onBtnSaveClicked() {
         val inputText = etBatchInput.text.toString()
         try {
             val jsonArray = JSONArray(inputText)
@@ -74,7 +74,7 @@ class BatchAddCourseDialog : DialogFragment() {
             }
 
             val courseList = ArrayList<Course>()
-            for (item in validCourses){
+            for (item in validCourses) {
                 courseList.add(
                     Course(
                         item.getString("name"),
@@ -85,7 +85,7 @@ class BatchAddCourseDialog : DialogFragment() {
                         item.getInt("endLesson"),
                         item.getString("location")
                     ).also {
-                        Log.d(TAG,"将要添加的课程：$it")
+                        Log.d(TAG, "将要添加的课程：$it")
                     }
                 )
             }
@@ -96,9 +96,12 @@ class BatchAddCourseDialog : DialogFragment() {
                 putParcelableArrayList("course_list", courseList)
             })
             dismiss()
-        }catch (e: JSONException){
-            val errorMessage = if (e.message!!.startsWith("第")){ e.message!! }else{
-                "输入的JSON格式错误" }
+        } catch (e: JSONException) {
+            val errorMessage = if (e.message!!.startsWith("第")) {
+                e.message!!
+            } else {
+                "输入的JSON格式错误"
+            }
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
             return
         }
