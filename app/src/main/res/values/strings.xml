@@ -49,4 +49,6 @@
     <string name="click_to_copy">一键复制</string>
     <string name="confirm_delete">确认删除</string>
     <string name="select_all">全选</string>
+    <string name="course_setting">课程设置</string>
+    <string name="about">关于</string>
 </resources>

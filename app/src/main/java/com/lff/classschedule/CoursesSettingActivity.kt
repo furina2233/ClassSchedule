@@ -357,12 +357,10 @@ class CoursesSettingActivity : AppCompatActivity() {
                         showEditCourseDialog(courseId, course)
                         true
                     }
-
                     R.id.menu_delete -> {
                         showDeleteConfirmDialog(courseId, course.name)
                         true
                     }
-
                     else -> false
                 }
             }

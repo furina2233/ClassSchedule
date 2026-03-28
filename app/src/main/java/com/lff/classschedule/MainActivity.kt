@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     fun checkFirstLaunch() {
         val sharedPreferences = getSharedPreferences("class_schedule_config", MODE_PRIVATE)
         val isFirstLaunch = sharedPreferences.getBoolean("is_first_launch", true)
-        if (true) {  // 暂时设置为一定是第一次启动
+        if (isFirstLaunch) {
             Log.d(TAG, "第一次启动，转到欢迎页")
             startActivity(Intent(this, WelcomeActivity::class.java))  // 转到欢迎页
             sharedPreferences.edit { putBoolean("is_first_launch", false) }
