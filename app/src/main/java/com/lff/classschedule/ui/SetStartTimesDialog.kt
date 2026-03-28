@@ -10,7 +10,7 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.lff.classschedule.R
-import com.lff.classschedule.config.SchoolScheduleConfig
+import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.util.ScreenUtil
 
 class SetStartTimesDialog : DialogFragment() {
@@ -23,7 +23,7 @@ class SetStartTimesDialog : DialogFragment() {
     private val minuteList = (0..59).map { it.toString().padStart(2, '0') }
 
     private val startTimes: MutableList<String> by lazy {
-        SchoolScheduleConfig.getStartTimes(requireContext()).toMutableList()
+        SharedPreferenceConfig.getStartTimes(requireContext()).toMutableList()
     }
     private lateinit var btnSave: MaterialButton
     private lateinit var btnAdd: MaterialButton
@@ -51,7 +51,7 @@ class SetStartTimesDialog : DialogFragment() {
         llContainer = view.findViewById(R.id.ll_set_start_times)
         scrollView = view.findViewById(R.id.scroll_view)
 
-        val currentMaxLessons = SchoolScheduleConfig.getMaxLessonsPerDay(requireContext())
+        val currentMaxLessons = SharedPreferenceConfig.getMaxLessonsPerDay(requireContext())
         Log.d(TAG, "当前的课程开始时间是：${startTimes.joinToString(",")}")
         for (i in 1..currentMaxLessons) {
             addLessonTimeCard(i)

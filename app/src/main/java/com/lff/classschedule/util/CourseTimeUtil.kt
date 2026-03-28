@@ -2,15 +2,15 @@ package com.lff.classschedule.util
 
 import android.content.Context
 import android.util.Log
-import com.lff.classschedule.config.SchoolScheduleConfig
+import com.lff.classschedule.config.SharedPreferenceConfig
 
 object CourseTimeUtil {
     private val TAG = "CourseTimeUtil"
 
     fun getTimeStringByStartAndEndClassIndex(context: Context, startIndex: Int, endIndex: Int): String {
-        val duration = SchoolScheduleConfig.getDurationPerLesson(context)
+        val duration = SharedPreferenceConfig.getDurationPerLesson(context)
 
-        val startTimes = SchoolScheduleConfig.getStartTimes(context)
+        val startTimes = SharedPreferenceConfig.getStartTimes(context)
 
         try {
             val startTime = startTimes[startIndex - 1]

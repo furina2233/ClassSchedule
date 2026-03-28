@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.lff.classschedule.config.SchoolScheduleConfig
+import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.ui.AddCourseDialog
@@ -73,6 +73,12 @@ class CoursesSettingActivity : AppCompatActivity() {
         batchDeleteBackPressedCallback = onBackPressedDispatcher.addCallback(this, false) {
             exitBatchDeleteMode()
         }
+
+        // 首次使用时
+        if(SharedPreferenceConfig.getIsFirstAddCourse(this)){
+            SharedPreferenceConfig.setIsFirstAddCourse(this, false)
+            setCustomSchoolSchedule()
+        }
     }
 
     private fun exitBatchDeleteMode() {
@@ -95,7 +101,7 @@ class CoursesSettingActivity : AppCompatActivity() {
     private fun syncCoursesMaxWeeksIfNeed() {
         supportFragmentManager.setFragmentResultListener(CustomSchoolScheduleDialog.TAG, this) { _, bundle ->
             val needSync = bundle.getBoolean("need_sync")
-            val newMaxWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(this)
+            val newMaxWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(this)
             val oldMaxWeeks = bundle.getInt("old_max_weeks")
 
             if (newMaxWeeks > oldMaxWeeks) {
@@ -294,7 +300,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         dialog.show(supportFragmentManager, SetStartTimesDialog.TAG)
         supportFragmentManager.setFragmentResultListener(SetStartTimesDialog.TAG, this) { _, bundle ->
             val newStartTimes = bundle.getStringArray("new_start_times")
-            newStartTimes?.let { SchoolScheduleConfig.setStartTimes(this, it) }
+            newStartTimes?.let { SharedPreferenceConfig.setStartTimes(this, it) }
             Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show()
             Log.d(TAG, "已保存新的课程开始时间：${newStartTimes?.joinToString(",")}")
         }

@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.lff.classschedule.R
-import com.lff.classschedule.config.SchoolScheduleConfig
+import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.util.ScreenUtil
 
 class CustomSchoolScheduleDialog
@@ -22,19 +22,28 @@ class CustomSchoolScheduleDialog
         const val TAG = "CustomSchoolScheduleDialog"
     }
 
+    private val termCommencementTimeMonth by lazy {
+        SharedPreferenceConfig.getTermCommencementTimeMonth(requireContext())
+    }
+    private val termCommencementTimeDay by lazy {
+        SharedPreferenceConfig.getTermCommencementTimeDay(requireContext())
+    }
     private val maxWeeks by lazy {
-        SchoolScheduleConfig.getMaxWeeksPerSemester(requireContext())
+        SharedPreferenceConfig.getMaxWeeksPerSemester(requireContext())
     }
     private val maxLessonsPerDay by lazy {
-        SchoolScheduleConfig.getMaxLessonsPerDay(requireContext())
+        SharedPreferenceConfig.getMaxLessonsPerDay(requireContext())
     }
     private val durationPerLesson by lazy {
-        SchoolScheduleConfig.getDurationPerLesson(requireContext())
+        SharedPreferenceConfig.getDurationPerLesson(requireContext())
     }
 
     private lateinit var etMaxWeeks: EditText
     private lateinit var etMaxLessonsPerDay: EditText
     private lateinit var etDurationPerLesson: EditText
+
+    private lateinit var etTermCommencementTimeMonth: EditText
+    private lateinit var etTermCommencementTimeDay: EditText
 
     override fun onStart() {
         super.onStart()
@@ -48,6 +57,8 @@ class CustomSchoolScheduleDialog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        etTermCommencementTimeMonth = view.findViewById(R.id.et_term_commencement_time_month)
+        etTermCommencementTimeDay = view.findViewById(R.id.et_term_commencement_time_day)
         etMaxWeeks = view.findViewById(R.id.et_set_max_weeks)
         etMaxLessonsPerDay = view.findViewById(R.id.et_set_max_lessons_per_day)
         etDurationPerLesson = view.findViewById(R.id.et_set_duration_per_lesson)
@@ -101,11 +112,18 @@ class CustomSchoolScheduleDialog
     }
 
     private fun performSave() {
+        val currentTermCommencementTimeMonth = etTermCommencementTimeMonth.text.toString().toIntOrNull()
+        val currentTermCommencementTimeDay = etTermCommencementTimeDay.text.toString().toIntOrNull()
         val currentMaxWeeks = etMaxWeeks.text.toString().toIntOrNull()
         val currentMaxLessonsPerDay = etMaxLessonsPerDay.text.toString().toIntOrNull()
         val currentDurationPerLesson = etDurationPerLesson.text.toString().toIntOrNull()
 
         // 校验
+        if (currentTermCommencementTimeMonth == null || currentTermCommencementTimeMonth <= 0 ||
+            currentTermCommencementTimeDay == null || currentTermCommencementTimeDay <= 0) {
+            Toast.makeText(context, "请输入正确的学期开始时间", Toast.LENGTH_SHORT).show()
+            return
+        }
         if (currentMaxWeeks == null || currentMaxWeeks <= 0) {
             Toast.makeText(context, "请输入正确的最大周数", Toast.LENGTH_SHORT).show()
             return
@@ -119,7 +137,9 @@ class CustomSchoolScheduleDialog
             return
         }
 
-        SchoolScheduleConfig.apply {
+        SharedPreferenceConfig.apply {
+            setTermCommencementTimeMonth(requireContext(), currentTermCommencementTimeMonth)
+            setTermCommencementTimeDay(requireContext(), currentTermCommencementTimeDay)
             setMaxWeeksPerSemester(requireContext(), currentMaxWeeks)
             setMaxLessonsPerDay(requireContext(), currentMaxLessonsPerDay)
             setDurationPerLesson(requireContext(), currentDurationPerLesson)
@@ -134,6 +154,8 @@ class CustomSchoolScheduleDialog
     }
 
     private fun preFillData() {
+        etTermCommencementTimeMonth.setText(termCommencementTimeMonth.toString())
+        etTermCommencementTimeDay.setText(termCommencementTimeDay.toString())
         etMaxWeeks.setText(maxWeeks.toString())
         etMaxLessonsPerDay.setText(maxLessonsPerDay.toString())
         etDurationPerLesson.setText(durationPerLesson.toString())

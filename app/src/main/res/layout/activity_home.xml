@@ -37,4 +37,62 @@
                 app:layout_constraintTop_toTopOf="@id/tv_class_schedule"
                 app:tint="@color/gray"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:id="@+id/ll_select_week"
+                  android:gravity="center"
+                  android:orientation="horizontal"
+                  app:layout_constraintTop_toBottomOf="@id/cl_top_bar"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent">
+        <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:id="@+id/spinner_select_week"
+                 android:dropDownHeight="100dp"/>
+    </LinearLayout>
+<!--    后面需要添加一个行表头，内容为周一、周二...-->
+    <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:id="@+id/sv_class_schedule"
+                app:layout_constraintTop_toBottomOf="@+id/ll_select_week"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:id="@+id/ll_class_schedule_container">
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:id="@+id/ll_column_header"/>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_weight="1"
+                          android:id="@+id/ll_column_container">
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:id="@+id/ll_monday_container"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:id="@+id/ll_tuesday_container"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:id="@+id/ll_wednesday_container"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:id="@+id/ll_thursday_container"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:id="@+id/ll_friday_container"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:id="@+id/ll_saturday_container"/>
+                <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                              android:layout_weight="1"
+                              android:orientation="vertical"
+                              android:id="@+id/ll_sunday_container"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

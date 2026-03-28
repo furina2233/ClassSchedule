@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import com.lff.classschedule.config.SharedPreferenceConfig
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,12 +19,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkFirstLaunch() {
-        val sharedPreferences = getSharedPreferences("class_schedule_config", MODE_PRIVATE)
-        val isFirstLaunch = sharedPreferences.getBoolean("is_first_launch", true)
+        val isFirstLaunch = SharedPreferenceConfig.getIsFirstLaunch(this)
         if (isFirstLaunch) {
             Log.d(TAG, "第一次启动，转到欢迎页")
             startActivity(Intent(this, WelcomeActivity::class.java))  // 转到欢迎页
-            sharedPreferences.edit { putBoolean("is_first_launch", false) }
+            SharedPreferenceConfig.setIsFirstLaunch(this, false)
         } else {
             Log.d(TAG, "非第一次启动，转到主页")
             startActivity(Intent(this, HomeActivity::class.java))  // 转到主页

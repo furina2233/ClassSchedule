@@ -51,4 +51,9 @@
     <string name="select_all">全选</string>
     <string name="course_setting">课程设置</string>
     <string name="about">关于</string>
+    <string name="term_commencement_time">学期开始时间：</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="one">1</string>
+    <string name="default_lesson_card_text">默认课程卡片文本</string>
 </resources>

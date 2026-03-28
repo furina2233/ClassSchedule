@@ -3,11 +3,14 @@ package com.lff.classschedule.config
 import android.content.Context
 import androidx.core.content.edit
 
-object SchoolScheduleConfig {
+object SharedPreferenceConfig {
     private const val PREF_NAME = "class_schedule_config"
     private const val KEY_MAX_WEEKS = "max_weeks"
     private const val KEY_MAX_LESSONS = "max_lessons_per_day"
     private const val KEY_DURATION = "duration_per_lesson"
+    private const val KEY_IS_FIRST_LAUNCH = "is_first_launch"
+
+    private const val KEY_IS_FIRST_ADD_COURSE = "is_first_add_course"
 
     private var cachedMaxWeeks: Int? = null
     private var cachedMaxLessons: Int? = null
@@ -69,5 +72,45 @@ object SchoolScheduleConfig {
         cachedMaxWeeks = null
         cachedMaxLessons = null
         cachedDuration = null
+    }
+
+    fun getIsFirstLaunch(context: Context): Boolean {
+        val prefs = getPrefs(context)
+        return prefs.getBoolean(KEY_IS_FIRST_LAUNCH, true)
+    }
+
+    fun setIsFirstLaunch(context: Context, value: Boolean) {
+        val prefs = getPrefs(context)
+        prefs.edit { putBoolean(KEY_IS_FIRST_LAUNCH, value) }
+    }
+
+    fun getIsFirstAddCourse(context: Context): Boolean {
+        val prefs = getPrefs(context)
+        return prefs.getBoolean(KEY_IS_FIRST_ADD_COURSE, true)
+    }
+
+    fun setIsFirstAddCourse(context: Context, value: Boolean) {
+        val prefs = getPrefs(context)
+        prefs.edit { putBoolean(KEY_IS_FIRST_ADD_COURSE, value) }
+    }
+
+    fun getTermCommencementTimeMonth(context: Context): Int {
+        val prefs = getPrefs(context)
+        return prefs.getInt("term_commencement_time_month", 9)
+    }
+
+    fun setTermCommencementTimeMonth(context: Context, value: Int) {
+        val prefs = getPrefs(context)
+        prefs.edit { putInt("term_commencement_time_month", value) }
+    }
+
+    fun getTermCommencementTimeDay(context: Context): Int {
+        val prefs = getPrefs(context)
+        return prefs.getInt("term_commencement_time_day", 1)
+    }
+
+    fun setTermCommencementTimeDay(context: Context, value: Int) {
+        val prefs = getPrefs(context)
+        prefs.edit { putInt("term_commencement_time_day", value) }
     }
 }

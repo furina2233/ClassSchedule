@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--卡片的高度为：当次课持续课长乘以60dp-->
+<com.google.android.material.card.MaterialCardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mcv_lesson_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        app:cardBackgroundColor="@color/default_lesson_card_background"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="2dp"
+        app:cardPreventCornerOverlap="true"
+        app:strokeWidth="0dp">
+    
+    <TextView
+            android:id="@+id/tv_lesson_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="start|top"
+            android:padding="4dp"
+            android:text="@string/default_lesson_card_text"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+</com.google.android.material.card.MaterialCardView>

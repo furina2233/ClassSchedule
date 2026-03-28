@@ -10,7 +10,7 @@ import android.widget.*
 import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
 import com.lff.classschedule.R
-import com.lff.classschedule.config.SchoolScheduleConfig
+import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
@@ -75,7 +75,7 @@ class AddCourseDialog : DialogFragment() {
         // 设置点击外部不关闭
         dialog?.setCanceledOnTouchOutside(false)
 
-        val maxWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(requireContext())
+        val maxWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(requireContext())
         val weeks = (1..maxWeeks).map { "第 $it 周" }
         // 开始周：1-18 正序
         spStartWeek.adapter = ArrayAdapter(
@@ -93,18 +93,11 @@ class AddCourseDialog : DialogFragment() {
         val days = arrayOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
         spDay.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, days)
 
-        val maxLessons = SchoolScheduleConfig.getMaxLessonsPerDay(requireContext())
+        val maxLessons = SharedPreferenceConfig.getMaxLessonsPerDay(requireContext())
         val lessons = (1..maxLessons).map { "第 $it 节" }
         val lessonAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, lessons)
         spStartLesson.adapter = lessonAdapter
         spEndLesson.adapter = lessonAdapter
-
-        // 处理首次使用提示
-        val prefs = requireContext().getSharedPreferences("class_schedule_config", Context.MODE_PRIVATE)
-        if (prefs.getBoolean("is_first_time", true)) {
-            Toast.makeText(context, "稍后可在设置中自定义每节课的具体时间哦", Toast.LENGTH_LONG).show()
-            prefs.edit { putBoolean("is_first_time", false) }
-        }
 
         btnSave.setOnClickListener {
             val name = etName.text.toString().trim()
@@ -156,7 +149,7 @@ class AddCourseDialog : DialogFragment() {
     private fun preFillData() {
         val course = arguments?.let { CompatibilityUtil.getParcelableCourse(it) } ?: return
 
-        val totalWeeks = SchoolScheduleConfig.getMaxWeeksPerSemester(requireContext()) // 获取当前设定的总周数
+        val totalWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(requireContext()) // 获取当前设定的总周数
 
         tvTitle.text = "修改课程"
         etName.setText(course.name)
