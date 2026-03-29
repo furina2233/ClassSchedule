@@ -2,5 +2,7 @@
 <resources>
     <dimen name="default_header_width">30dp</dimen>
     <dimen name="default_header_and_card_height">70dp</dimen>
-    <dimen name="default_card_margin">1dp</dimen>
+    <dimen name="default_card_margin_top">0dp</dimen>
+    <dimen name="default_card_margin_bottom">4dp</dimen>
+    <dimen name="default_card_margin_side">1dp</dimen>
 </resources>

@@ -5,10 +5,11 @@ import android.util.TypedValue
 
 object ViewUtil {
     const val SINGLE_LESSON_DP = 70 // 基础高度
+    const val MARGIN_BOTTOM_DP = 4
 
     fun getLessonHeightPx(context: Context, duration: Int): Int {
-        val totalHeight = duration * SINGLE_LESSON_DP
-        return dpToPx(context, totalHeight) + duration * 6
+        val totalHeight = duration * SINGLE_LESSON_DP + (duration - 1) * MARGIN_BOTTOM_DP
+        return dpToPx(context, totalHeight)
     }
 
     fun dpToPx(context: Context, dp: Int): Int {

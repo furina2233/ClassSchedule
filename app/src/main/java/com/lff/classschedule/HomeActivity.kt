@@ -88,7 +88,7 @@ class HomeActivity : AppCompatActivity() {
                 // 无课判断
                 if (lesson.startLesson > currentLesson) {
                     val gapSize = lesson.startLesson - currentLesson
-                    addEmptyView(dayLayout, gapSize)
+                    addEmptyCard(dayLayout, gapSize)
                 }
 
                 addCourseCard(dayLayout, lesson)
@@ -96,7 +96,7 @@ class HomeActivity : AppCompatActivity() {
             }
             // 无课判断
             if (currentLesson <= maxLessons) {
-                addEmptyView(dayLayout, maxLessons - currentLesson + 1)
+                addEmptyCard(dayLayout, maxLessons - currentLesson + 1)
             }
         }
     }
@@ -116,7 +116,6 @@ class HomeActivity : AppCompatActivity() {
         val params = card.layoutParams as LinearLayout.LayoutParams
         val duration = lesson.endLesson - lesson.startLesson + 1
         params.height = ViewUtil.getLessonHeightPx(this, duration)
-        params.setMargins(0, 2, 2, 6)
         card.layoutParams = params
 
         card.setOnClickListener {
@@ -127,16 +126,14 @@ class HomeActivity : AppCompatActivity() {
         container.addView(card)
     }
 
-    private fun addEmptyView(container: LinearLayout, duration: Int) {
-        val emptyView = View(this)
-        val params = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            ViewUtil.getLessonHeightPx(this, duration)
-        )
-        params.setMargins(0, 2, 2, 6)
-        emptyView.layoutParams = params
+    private fun addEmptyCard(container: LinearLayout, duration: Int) {
+        val card = layoutInflater.inflate(R.layout.item_class_schedule_lesson_empty_card, container, false)
 
-        container.addView(emptyView)
+        val params = card.layoutParams as LinearLayout.LayoutParams
+        params.height = ViewUtil.getLessonHeightPx(this, duration)
+        card.layoutParams = params
+
+        container.addView(card)
     }
 
     private fun loadClassScheduleTable() {
@@ -144,10 +141,6 @@ class HomeActivity : AppCompatActivity() {
         llColumnHeader.removeAllViews()
         for (i in 1..SharedPreferenceConfig.getMaxLessonsPerDay(this)) {
             val headerItem = layoutInflater.inflate(R.layout.item_class_schedule_column_header, llColumnHeader, false)
-
-            val params = headerItem.layoutParams as LinearLayout.LayoutParams
-            params.setMargins(0, 2, 2, 6)
-
             headerItem.findViewById<TextView>(R.id.tv_column_header).text = "$i"
             llColumnHeader.addView(headerItem)
         }

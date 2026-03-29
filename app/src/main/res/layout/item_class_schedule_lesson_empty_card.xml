@@ -9,7 +9,6 @@
         android:layout_marginStart="@dimen/default_card_margin_side"
         android:layout_marginEnd="@dimen/default_card_margin_side"
         android:layout_height="@dimen/default_header_and_card_height"
-        android:background="@drawable/bg_class_schedule_lesson_card"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground">
@@ -21,7 +20,7 @@
             android:ellipsize="end"
             android:gravity="start|top"
             android:padding="5dp"
-            android:text="@string/default_lesson_card_text"
+            android:text=""
             android:textColor="#FFFFFF"
             android:textSize="12sp"
             android:textStyle="bold" />
