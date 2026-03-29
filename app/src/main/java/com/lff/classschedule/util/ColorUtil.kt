@@ -2,7 +2,6 @@ package com.lff.classschedule.util
 
 import androidx.core.graphics.toColorInt
 import java.time.LocalDate
-import kotlin.math.abs
 import kotlin.random.Random
 
 object ColorUtil {
@@ -39,8 +38,8 @@ object ColorUtil {
         colorList = colorListTemplate.toMutableList()
     }
 
-    private fun checkEmpty(){
-        if (colorList.isEmpty()){
+    private fun checkEmpty() {
+        if (colorList.isEmpty()) {
             colorList.addAll(shuffledTemplate)
         }
     }

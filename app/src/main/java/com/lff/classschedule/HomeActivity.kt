@@ -4,18 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.PopupMenu
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.pojo.Lesson
+import com.lff.classschedule.ui.LessonInfoDialog
 import com.lff.classschedule.util.ColorUtil
 import com.lff.classschedule.util.ViewUtil
 import java.time.DayOfWeek
@@ -24,7 +19,7 @@ import java.time.temporal.ChronoUnit
 
 class HomeActivity : AppCompatActivity() {
 
-    companion object{
+    companion object {
         const val TAG = "HomeActivity"
     }
 
@@ -35,7 +30,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var dbHelper: CourseDbHelper
 
     private lateinit var courseSet: MutableSet<Course>
-    private val lessonMap: MutableMap<DayOfWeek,List<Lesson>> = mutableMapOf()
+    private val lessonMap: MutableMap<DayOfWeek, List<Lesson>> = mutableMapOf()
     private var currentWeek: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +53,7 @@ class HomeActivity : AppCompatActivity() {
         setupSpinnerSelectWeek()
 
         courseSet = dbHelper.queryAllCourses().values.toMutableSet()
-        Log.d(TAG,"查询到的课程为：$courseSet")
+        Log.d(TAG, "查询到的课程为：$courseSet")
 
         loadClassScheduleTable()
 
@@ -121,11 +116,12 @@ class HomeActivity : AppCompatActivity() {
         val params = card.layoutParams as LinearLayout.LayoutParams
         val duration = lesson.endLesson - lesson.startLesson + 1
         params.height = ViewUtil.getLessonHeightPx(this, duration)
-        params.setMargins(2, 2, 2, 2)  // 理论上应该跟空白view一样，但是实际上会对不齐
+        params.setMargins(0, 2, 2, 6)
         card.layoutParams = params
 
         card.setOnClickListener {
-            Toast.makeText(this, "查看课程: ${lesson.name}", Toast.LENGTH_SHORT).show()
+            val dialog = LessonInfoDialog.newInstance(lesson.course)
+            dialog.show(supportFragmentManager, LessonInfoDialog.TAG)
         }
 
         container.addView(card)
@@ -137,7 +133,7 @@ class HomeActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             ViewUtil.getLessonHeightPx(this, duration)
         )
-        params.setMargins(1, 1, 1, 1)
+        params.setMargins(0, 2, 2, 6)
         emptyView.layoutParams = params
 
         container.addView(emptyView)
@@ -147,7 +143,11 @@ class HomeActivity : AppCompatActivity() {
         val llColumnHeader = findViewById<LinearLayout>(R.id.ll_column_header)
         llColumnHeader.removeAllViews()
         for (i in 1..SharedPreferenceConfig.getMaxLessonsPerDay(this)) {
-            val headerItem = layoutInflater.inflate(R.layout.item_class_schedule_column_header,llColumnHeader,false)
+            val headerItem = layoutInflater.inflate(R.layout.item_class_schedule_column_header, llColumnHeader, false)
+
+            val params = headerItem.layoutParams as LinearLayout.LayoutParams
+            params.setMargins(0, 2, 2, 6)
+
             headerItem.findViewById<TextView>(R.id.tv_column_header).text = "$i"
             llColumnHeader.addView(headerItem)
         }
@@ -155,19 +155,20 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun buildLessonMap() {
-        for (dayOfWeek in 1..7){
+        for (dayOfWeek in 1..7) {
             val lessons = mutableListOf<Lesson>()
             val iterator = courseSet.iterator()
             while (iterator.hasNext()) {
                 val course = iterator.next()
-                if (course.dayOfWeek == dayOfWeek&& currentWeek >= course.startWeek && currentWeek <= course.endWeek) {
+                if (course.dayOfWeek == dayOfWeek && currentWeek >= course.startWeek && currentWeek <= course.endWeek) {
                     lessons.add(
                         Lesson(
                             course.name,
                             course.startLesson,
                             course.endLesson,
                             DayOfWeek.of(course.dayOfWeek),
-                            "${course.name}@${course.location}"
+                            "${course.name}@${course.location}",
+                            course
                         )
                     )
                 }
@@ -175,7 +176,7 @@ class HomeActivity : AppCompatActivity() {
             lessons.sortBy { it.startLesson }
             lessonMap[DayOfWeek.of(dayOfWeek)] = lessons
         }
-        Log.d(TAG,"构建的课表为：$lessonMap")
+        Log.d(TAG, "构建的课表为：$lessonMap")
     }
 
     private fun setupSpinnerSelectWeek() {
@@ -245,10 +246,13 @@ class HomeActivity : AppCompatActivity() {
                         startActivity(Intent(this, CoursesSettingActivity::class.java))
                         true
                     }
+
                     R.id.menu_about -> {
                         TODO("关于页面")
                         true
-                    }else -> false
+                    }
+
+                    else -> false
                 }
             }
             popupMenu.show()

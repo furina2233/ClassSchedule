@@ -75,7 +75,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         }
 
         // 首次使用时
-        if(SharedPreferenceConfig.getIsFirstAddCourse(this)){
+        if (SharedPreferenceConfig.getIsFirstAddCourse(this)) {
             SharedPreferenceConfig.setIsFirstAddCourse(this, false)
             setCustomSchoolSchedule()
         }
@@ -363,10 +363,12 @@ class CoursesSettingActivity : AppCompatActivity() {
                         showEditCourseDialog(courseId, course)
                         true
                     }
+
                     R.id.menu_delete -> {
                         showDeleteConfirmDialog(courseId, course.name)
                         true
                     }
+
                     else -> false
                 }
             }

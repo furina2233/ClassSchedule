@@ -1,13 +1,11 @@
 package com.lff.classschedule.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.edit
 import androidx.fragment.app.DialogFragment
 import com.lff.classschedule.R
 import com.lff.classschedule.config.SharedPreferenceConfig
