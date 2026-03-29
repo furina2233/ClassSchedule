@@ -4,7 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fl_lesson_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/default_header_and_card_height"
         android:background="@drawable/bg_class_schedule_lesson_card"
         android:clickable="true"
         android:focusable="true"

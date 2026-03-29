@@ -12,6 +12,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.setMargins
 import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.pojo.Course
@@ -88,7 +89,6 @@ class HomeActivity : AppCompatActivity() {
 
             var currentLesson = 1
 
-            // 3. 填充这一天的每一节课位
             for (lesson in dayLessons) {
                 // 无课判断
                 if (lesson.startLesson > currentLesson) {
@@ -121,7 +121,8 @@ class HomeActivity : AppCompatActivity() {
         val params = card.layoutParams as LinearLayout.LayoutParams
         val duration = lesson.endLesson - lesson.startLesson + 1
         params.height = ViewUtil.getLessonHeightPx(this, duration)
-        params.setMargins(2, 2, 2, 2)  // 理论上应该跟空白view一样，但是实际上会对不齐
+        val margin = ViewUtil.dpToPx(this, resources.getDimensionPixelSize(R.dimen.default_card_margin))
+        setParamsMargin(params, margin)
         card.layoutParams = params
 
         card.setOnClickListener {
@@ -137,7 +138,8 @@ class HomeActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             ViewUtil.getLessonHeightPx(this, duration)
         )
-        params.setMargins(1, 1, 1, 1)
+        val margin = ViewUtil.dpToPx(this, resources.getDimensionPixelSize(R.dimen.default_card_margin))
+        setParamsMargin(params, margin)
         emptyView.layoutParams = params
 
         container.addView(emptyView)
@@ -146,12 +148,24 @@ class HomeActivity : AppCompatActivity() {
     private fun loadClassScheduleTable() {
         val llColumnHeader = findViewById<LinearLayout>(R.id.ll_column_header)
         llColumnHeader.removeAllViews()
+
+        // 导入表头
         for (i in 1..SharedPreferenceConfig.getMaxLessonsPerDay(this)) {
             val headerItem = layoutInflater.inflate(R.layout.item_class_schedule_column_header,llColumnHeader,false)
+
+            val params = headerItem.layoutParams as LinearLayout.LayoutParams
+            val margin = ViewUtil.dpToPx(this, resources.getDimensionPixelSize(R.dimen.default_card_margin))
+            setParamsMargin(params, margin)
+
+            headerItem.layoutParams = params
             headerItem.findViewById<TextView>(R.id.tv_column_header).text = "$i"
             llColumnHeader.addView(headerItem)
         }
 
+    }
+
+    private fun setParamsMargin(params: LinearLayout.LayoutParams, margin: Int) {
+        params.setMargins(margin,0,margin,2 * margin)
     }
 
     private fun buildLessonMap() {

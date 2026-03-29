@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_margin="1dp">
+              android:layout_width="@dimen/default_header_width"
+              android:layout_height="@dimen/default_header_and_card_height">
 <!--    去掉了android:background="@drawable/bg_class_schedule_column_header_card"-->
-    <TextView android:layout_width="30dp" android:layout_height="70dp"
+    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
               android:id="@+id/tv_column_header"
               android:src="@drawable/bg_class_schedule_column_header_card"
               android:text="@string/one"
