@@ -121,7 +121,8 @@ class CustomSchoolScheduleDialog
 
         // 校验
         if (currentTermCommencementTimeMonth == null || currentTermCommencementTimeMonth !in 1..12 ||
-            currentTermCommencementTimeDay == null || currentTermCommencementTimeDay !in 1..31) {
+            currentTermCommencementTimeDay == null || currentTermCommencementTimeDay !in 1..31
+        ) {
             Toast.makeText(context, "请输入正确的学期开始时间", Toast.LENGTH_SHORT).show()
             return
         }

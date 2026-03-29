@@ -7,5 +7,6 @@ data class Lesson(
     val startLesson: Int,
     val endLesson: Int,
     val dayOfWeek: DayOfWeek,
-    val description: String
+    val description: String,
+    val course: Course
 )
