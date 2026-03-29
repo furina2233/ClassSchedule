@@ -9,7 +9,6 @@
 <!--    去掉了android:background="@drawable/bg_class_schedule_column_header_card"-->
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
               android:id="@+id/tv_column_header"
-              android:background="@drawable/bg_class_schedule_column_header_card"
               android:src="@drawable/bg_class_schedule_column_header_card"
               android:text="@string/one"
               android:textColor="@color/black"
