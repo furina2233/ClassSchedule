@@ -1,5 +1,6 @@
 package com.lff.classschedule.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,9 +23,7 @@ class SetStartTimesDialog : DialogFragment() {
     private val hourList = (0..23).map { it.toString().padStart(2, '0') }
     private val minuteList = (0..59).map { it.toString().padStart(2, '0') }
 
-    private val startTimes: MutableList<String> by lazy {
-        SharedPreferenceConfig.getStartTimes(requireContext()).toMutableList()
-    }
+    private lateinit var startTimes: MutableList<String>
     private lateinit var btnSave: MaterialButton
     private lateinit var btnAdd: MaterialButton
     private lateinit var btnSort: MaterialButton
@@ -43,6 +42,11 @@ class SetStartTimesDialog : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_set_start_times, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        startTimes = SharedPreferenceConfig.getStartTimes(context).toMutableList()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

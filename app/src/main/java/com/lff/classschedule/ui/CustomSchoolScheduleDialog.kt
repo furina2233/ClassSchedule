@@ -1,5 +1,6 @@
 package com.lff.classschedule.ui
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -22,21 +23,11 @@ class CustomSchoolScheduleDialog
         const val TAG = "CustomSchoolScheduleDialog"
     }
 
-    private val termCommencementTimeMonth by lazy {
-        SharedPreferenceConfig.getTermCommencementTimeMonth(requireContext())
-    }
-    private val termCommencementTimeDay by lazy {
-        SharedPreferenceConfig.getTermCommencementTimeDay(requireContext())
-    }
-    private val maxWeeks by lazy {
-        SharedPreferenceConfig.getMaxWeeksPerSemester(requireContext())
-    }
-    private val maxLessonsPerDay by lazy {
-        SharedPreferenceConfig.getMaxLessonsPerDay(requireContext())
-    }
-    private val durationPerLesson by lazy {
-        SharedPreferenceConfig.getDurationPerLesson(requireContext())
-    }
+    private var termCommencementTimeMonth: Int = 0
+    private var termCommencementTimeDay: Int = 0
+    private var maxWeeks: Int = 0
+    private var maxLessonsPerDay: Int = 0
+    private var durationPerLesson: Int = 0
 
     private lateinit var etMaxWeeks: EditText
     private lateinit var etMaxLessonsPerDay: EditText
@@ -52,6 +43,16 @@ class CustomSchoolScheduleDialog
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_custom_school_schedule, container, false)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        termCommencementTimeMonth = SharedPreferenceConfig.getTermCommencementTimeMonth(context)
+        termCommencementTimeDay = SharedPreferenceConfig.getTermCommencementTimeDay(context)
+        maxWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(context)
+        maxLessonsPerDay = SharedPreferenceConfig.getMaxLessonsPerDay(context)
+        durationPerLesson = SharedPreferenceConfig.getDurationPerLesson(context)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,8 +120,16 @@ class CustomSchoolScheduleDialog
         val currentDurationPerLesson = etDurationPerLesson.text.toString().toIntOrNull()
 
         // 校验
-        if (currentTermCommencementTimeMonth == null || currentTermCommencementTimeMonth <= 0 ||
-            currentTermCommencementTimeDay == null || currentTermCommencementTimeDay <= 0) {
+        if (currentTermCommencementTimeMonth == null || currentTermCommencementTimeMonth !in 1..12 ||
+            currentTermCommencementTimeDay == null || currentTermCommencementTimeDay !in 1..31) {
+            Toast.makeText(context, "请输入正确的学期开始时间", Toast.LENGTH_SHORT).show()
+            return
+        }
+        try {
+            val year = java.time.LocalDate.now().year
+            java.time.LocalDate.of(year, currentTermCommencementTimeMonth, currentTermCommencementTimeDay)
+
+        } catch (e: java.time.DateTimeException) {
             Toast.makeText(context, "请输入正确的学期开始时间", Toast.LENGTH_SHORT).show()
             return
         }

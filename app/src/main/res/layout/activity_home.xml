@@ -49,11 +49,12 @@
                  android:dropDownHeight="100dp"/>
     </LinearLayout>
 <!--    后面需要添加一个行表头，内容为周一、周二...-->
-    <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content"
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
                 android:id="@+id/sv_class_schedule"
                 app:layout_constraintTop_toBottomOf="@+id/ll_select_week"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:orientation="horizontal"
                       android:id="@+id/ll_class_schedule_container">

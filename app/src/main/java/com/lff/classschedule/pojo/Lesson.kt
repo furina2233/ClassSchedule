@@ -1,11 +1,11 @@
 package com.lff.classschedule.pojo
 
-class Lesson(
-    var name: String,
-    var startWeek: Int,
-    var endWeek: Int,
-    var num: List<Int>,
-    var day: Day
-) {
+import java.time.DayOfWeek
 
-}
+data class Lesson(
+    val name: String,
+    val startLesson: Int,
+    val endLesson: Int,
+    val dayOfWeek: DayOfWeek,
+    val description: String
+)
