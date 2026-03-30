@@ -23,6 +23,6 @@
             android:text=""
             android:textColor="#FFFFFF"
             android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
 </FrameLayout>
