@@ -5,112 +5,50 @@ import androidx.core.content.edit
 
 object SharedPreferenceConfig {
     private const val PREF_NAME = "class_schedule_config"
-    private const val KEY_MAX_WEEKS = "max_weeks"
-    private const val KEY_MAX_LESSONS = "max_lessons_per_day"
-    private const val KEY_DURATION = "duration_per_lesson"
-    private const val KEY_IS_FIRST_LAUNCH = "is_first_launch"
 
-    private const val KEY_IS_FIRST_ADD_COURSE = "is_first_add_course"
+    const val KEY_MAX_WEEKS = "max_weeks"
+    const val KEY_MAX_LESSONS_PER_DAY = "max_lessons_per_day"
+    const val KEY_DURATION_PER_LESSON = "duration_per_lesson"
+    const val KEY_IS_FIRST_LAUNCH = "is_first_launch"
+    const val KEY_IS_FIRST_ADD_COURSE = "is_first_add_course"
+    const val KEY_START_TIMES = "start_times_csv"
+    const val KEY_TERM_COMMENCEMENT_TIME_MONTH = "term_commencement_time_month"
+    const val KEY_TERM_COMMENCEMENT_TIME_DAY = "term_commencement_time_day"
 
-    private var cachedMaxWeeks: Int? = null
-    private var cachedMaxLessons: Int? = null
-    private var cachedDuration: Int? = null
+    private val defaultValuesMap: MutableMap<String, Any> = mutableMapOf()
+
+    init {
+        defaultValuesMap[KEY_MAX_WEEKS] = 18
+        defaultValuesMap[KEY_MAX_LESSONS_PER_DAY] = 13
+        defaultValuesMap[KEY_DURATION_PER_LESSON] = 45
+        defaultValuesMap[KEY_IS_FIRST_LAUNCH] = true
+        defaultValuesMap[KEY_IS_FIRST_ADD_COURSE] = true
+        defaultValuesMap[KEY_START_TIMES] = "8:00,9:50,10:40,11:30,12:20,14:00,14:50,15:50,16:40,17:30,19:00,19:50,20:40"
+        defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_MONTH] = 9
+        defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_DAY] = 1
+    }
 
     private fun getPrefs(context: Context) =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
 
-    fun getMaxWeeksPerSemester(context: Context): Int =
-        cachedMaxWeeks ?: getPrefs(context).getInt(KEY_MAX_WEEKS, 18).also { cachedMaxWeeks = it }
+    fun getInt(context: Context, key: String): Int =
+        getPrefs(context).getInt(key, defaultValuesMap[key] as Int)
 
-    fun setMaxWeeksPerSemester(context: Context, value: Int) {
-        cachedMaxWeeks = value
-        getPrefs(context).edit { putInt(KEY_MAX_WEEKS, value) }
+    fun setInt(context: Context, key: String, value: Int) {
+        getPrefs(context).edit { putInt(key, value) }
     }
 
-    fun getMaxLessonsPerDay(context: Context): Int =
-        cachedMaxLessons ?: getPrefs(context).getInt(KEY_MAX_LESSONS, 13).also { cachedMaxLessons = it }
+    fun getString(context: Context, key: String): String =
+        getPrefs(context).getString(key, defaultValuesMap[key] as String)?:""
 
-    fun setMaxLessonsPerDay(context: Context, value: Int) {
-        cachedMaxLessons = value
-        getPrefs(context).edit { putInt(KEY_MAX_LESSONS, value) }
+    fun setString(context: Context, key: String, value: String) {
+        getPrefs(context).edit { putString(key, value) }
     }
 
-    fun getDurationPerLesson(context: Context): Int =
-        cachedDuration ?: getPrefs(context).getInt(KEY_DURATION, 45)
+    fun getBoolean(context: Context, key: String): Boolean =
+        getPrefs(context).getBoolean(key, defaultValuesMap[key] as Boolean)
 
-    fun setDurationPerLesson(context: Context, value: Int) {
-        cachedDuration = value
-        getPrefs(context).edit { putInt(KEY_DURATION, value) }
-    }
-
-    fun getStartTimes(context: Context): Array<String> {
-        val prefs = getPrefs(context)
-        return prefs.getString("start_times_csv", null)?.split(",")?.toTypedArray()
-            ?: arrayOf(
-                "08:00",
-                "08:50",
-                "09:50",
-                "10:40",
-                "11:30",
-                "14:00",
-                "14:50",
-                "15:50",
-                "16:40",
-                "17:30",
-                "19:00",
-                "19:50",
-                "20:40"
-            )
-    }
-
-    fun setStartTimes(context: Context, startTimes: Array<String>) {
-        val prefs = getPrefs(context)
-        prefs.edit { putString("start_times_csv", startTimes.joinToString(",")) }
-    }
-
-    fun clearCache() {
-        cachedMaxWeeks = null
-        cachedMaxLessons = null
-        cachedDuration = null
-    }
-
-    fun getIsFirstLaunch(context: Context): Boolean {
-        val prefs = getPrefs(context)
-        return prefs.getBoolean(KEY_IS_FIRST_LAUNCH, true)
-    }
-
-    fun setIsFirstLaunch(context: Context, value: Boolean) {
-        val prefs = getPrefs(context)
-        prefs.edit { putBoolean(KEY_IS_FIRST_LAUNCH, value) }
-    }
-
-    fun getIsFirstAddCourse(context: Context): Boolean {
-        val prefs = getPrefs(context)
-        return prefs.getBoolean(KEY_IS_FIRST_ADD_COURSE, true)
-    }
-
-    fun setIsFirstAddCourse(context: Context, value: Boolean) {
-        val prefs = getPrefs(context)
-        prefs.edit { putBoolean(KEY_IS_FIRST_ADD_COURSE, value) }
-    }
-
-    fun getTermCommencementTimeMonth(context: Context): Int {
-        val prefs = getPrefs(context)
-        return prefs.getInt("term_commencement_time_month", 9)
-    }
-
-    fun setTermCommencementTimeMonth(context: Context, value: Int) {
-        val prefs = getPrefs(context)
-        prefs.edit { putInt("term_commencement_time_month", value) }
-    }
-
-    fun getTermCommencementTimeDay(context: Context): Int {
-        val prefs = getPrefs(context)
-        return prefs.getInt("term_commencement_time_day", 1)
-    }
-
-    fun setTermCommencementTimeDay(context: Context, value: Int) {
-        val prefs = getPrefs(context)
-        prefs.edit { putInt("term_commencement_time_day", value) }
+    fun setBoolean(context: Context, key: String, value: Boolean) {
+        getPrefs(context).edit { putBoolean(key, value) }
     }
 }

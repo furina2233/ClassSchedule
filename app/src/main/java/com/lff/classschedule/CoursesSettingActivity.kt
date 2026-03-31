@@ -46,9 +46,6 @@ class CoursesSettingActivity : AppCompatActivity() {
 
         // 从课程设置页面返回时一定返回主页
         onBackPressedDispatcher.addCallback {
-            val intent = Intent(this@CoursesSettingActivity, HomeActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(intent)
             Log.d(TAG, "已返回主界面")
             finish()
         }
@@ -75,8 +72,8 @@ class CoursesSettingActivity : AppCompatActivity() {
         }
 
         // 首次使用时
-        if (SharedPreferenceConfig.getIsFirstAddCourse(this)) {
-            SharedPreferenceConfig.setIsFirstAddCourse(this, false)
+        if (SharedPreferenceConfig.getBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_ADD_COURSE)) {
+            SharedPreferenceConfig.setBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_ADD_COURSE, false)
             setCustomSchoolSchedule()
         }
     }
@@ -84,6 +81,7 @@ class CoursesSettingActivity : AppCompatActivity() {
     private fun exitBatchDeleteMode() {
         llBatchDeleteBar.visibility = View.GONE
         btnCourseSetting.visibility = View.VISIBLE
+        btnAddCourse.visibility = View.VISIBLE
 
         btnAddCourse.show()
 
@@ -101,7 +99,7 @@ class CoursesSettingActivity : AppCompatActivity() {
     private fun syncCoursesMaxWeeksIfNeed() {
         supportFragmentManager.setFragmentResultListener(CustomSchoolScheduleDialog.TAG, this) { _, bundle ->
             val needSync = bundle.getBoolean("need_sync")
-            val newMaxWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(this)
+            val newMaxWeeks = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_WEEKS)
             val oldMaxWeeks = bundle.getInt("old_max_weeks")
 
             if (newMaxWeeks > oldMaxWeeks) {
@@ -156,6 +154,7 @@ class CoursesSettingActivity : AppCompatActivity() {
 
     private fun batchDeleteCourse() {
         btnCourseSetting.visibility = View.INVISIBLE
+        btnAddCourse.visibility = View.INVISIBLE
         batchDeleteBackPressedCallback.isEnabled = true
 
         val toDeleteCourseList = mutableSetOf<String>()
@@ -300,7 +299,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         dialog.show(supportFragmentManager, SetStartTimesDialog.TAG)
         supportFragmentManager.setFragmentResultListener(SetStartTimesDialog.TAG, this) { _, bundle ->
             val newStartTimes = bundle.getStringArray("new_start_times")
-            newStartTimes?.let { SharedPreferenceConfig.setStartTimes(this, it) }
+            newStartTimes?.let { SharedPreferenceConfig.setString(this, SharedPreferenceConfig.KEY_START_TIMES, it.joinToString(",")) }
             Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show()
             Log.d(TAG, "已保存新的课程开始时间：${newStartTimes?.joinToString(",")}")
         }

@@ -71,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
             findViewById(R.id.ll_sunday_container)
         )
 
-        val maxLessons = SharedPreferenceConfig.getMaxLessonsPerDay(this)
+        val maxLessons = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)
 
         for (i in 1..7) {
             val dayOfWeek = DayOfWeek.of(i)
@@ -139,7 +139,7 @@ class HomeActivity : AppCompatActivity() {
     private fun loadClassScheduleTable() {
         val llColumnHeader = findViewById<LinearLayout>(R.id.ll_column_header)
         llColumnHeader.removeAllViews()
-        for (i in 1..SharedPreferenceConfig.getMaxLessonsPerDay(this)) {
+        for (i in 1..SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)) {
             val headerItem = layoutInflater.inflate(R.layout.item_class_schedule_column_header, llColumnHeader, false)
             headerItem.findViewById<TextView>(R.id.tv_column_header).text = "$i"
             llColumnHeader.addView(headerItem)
@@ -173,14 +173,14 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setupSpinnerSelectWeek() {
-        val maxWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(this)
+        val maxWeeks = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_WEEKS)
         val weeksArray = Array(maxWeeks) { "第${it + 1}周" }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, weeksArray)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerSelectWeek.adapter = adapter
 
-        val termCommencementTimeMonth = SharedPreferenceConfig.getTermCommencementTimeMonth(this)
-        val termCommencementTimeDay = SharedPreferenceConfig.getTermCommencementTimeDay(this)
+        val termCommencementTimeMonth = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
+        val termCommencementTimeDay = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
 
         currentWeek = calculateCurrentWeek(termCommencementTimeMonth, termCommencementTimeDay)
 
@@ -236,7 +236,9 @@ class HomeActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.menu_course_setting -> {
-                        startActivity(Intent(this, CoursesSettingActivity::class.java))
+                        val intent = Intent(this, CoursesSettingActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        startActivity(intent)
                         true
                     }
 

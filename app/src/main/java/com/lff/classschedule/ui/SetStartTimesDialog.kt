@@ -27,6 +27,7 @@ class SetStartTimesDialog : DialogFragment() {
     private lateinit var btnSave: MaterialButton
     private lateinit var btnAdd: MaterialButton
     private lateinit var btnSort: MaterialButton
+    private lateinit var btnQuickSetStartTimes: MaterialButton
     private lateinit var scrollView: NestedScrollView
 
     private var cardOnSelected: View? = null
@@ -46,16 +47,19 @@ class SetStartTimesDialog : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        startTimes = SharedPreferenceConfig.getStartTimes(context).toMutableList()
+        startTimes = SharedPreferenceConfig.getString(context, SharedPreferenceConfig.KEY_START_TIMES).split(",") as MutableList<String>
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 设置点击外部不关闭
+        dialog?.setCanceledOnTouchOutside(false)
+
         llContainer = view.findViewById(R.id.ll_set_start_times)
         scrollView = view.findViewById(R.id.scroll_view)
 
-        val currentMaxLessons = SharedPreferenceConfig.getMaxLessonsPerDay(requireContext())
+        val currentMaxLessons = SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)
         Log.d(TAG, "当前的课程开始时间是：${startTimes.joinToString(",")}")
         for (i in 1..currentMaxLessons) {
             addLessonTimeCard(i)
@@ -77,6 +81,21 @@ class SetStartTimesDialog : DialogFragment() {
         btnSort = view.findViewById(R.id.btn_sort)
         btnSort.setOnClickListener {
             onSortButtonClick()
+        }
+
+        btnQuickSetStartTimes = view.findViewById(R.id.btn_quick_set_start_times)
+        btnQuickSetStartTimes.setOnClickListener {
+            val dialog = QuickSetStartTimesDialog()
+            dialog.show(childFragmentManager, QuickSetStartTimesDialog.TAG)
+        }
+
+        // 用户通过快速设置开始时间窗口设置开始时间后，重新创建自己的实例
+        childFragmentManager.setFragmentResultListener(QuickSetStartTimesDialog.TAG, this){ _, bundle ->
+            bundle.getString("start_times")?.let { startTimes = it.split(",") as MutableList<String> }
+            SharedPreferenceConfig.setString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES, startTimes.joinToString(","))
+            dismiss()
+            val dialog = SetStartTimesDialog()
+            dialog.show(parentFragmentManager, TAG)
         }
     }
 

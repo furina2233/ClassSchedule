@@ -18,11 +18,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkFirstLaunch() {
-        val isFirstLaunch = SharedPreferenceConfig.getIsFirstLaunch(this)
+        val isFirstLaunch = SharedPreferenceConfig.getBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_LAUNCH)
         if (isFirstLaunch) {
             Log.d(TAG, "第一次启动，转到欢迎页")
             startActivity(Intent(this, WelcomeActivity::class.java))  // 转到欢迎页
-            SharedPreferenceConfig.setIsFirstLaunch(this, false)
+            SharedPreferenceConfig.setBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_LAUNCH, false)
         } else {
             Log.d(TAG, "非第一次启动，转到主页")
             startActivity(Intent(this, HomeActivity::class.java))  // 转到主页

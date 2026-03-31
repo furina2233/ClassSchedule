@@ -41,7 +41,7 @@
     <string name="put_json_data_hero">在此输入JSON数据</string>
     <string name="i_got_it">我知道了</string>
     <string name="prompt">
-        根据图中信息，提取为json数组。注意上课地点是否带有空格，如果有，用转义字符把空格也包括进去。如果只有一门课程，也要用中括号包裹json字符串。格式如下：\nname（课程名称,字符串）\nstartWeek（开始周数，整数）\nendWeek（结束周数，整数）\ndayOfWeek（周几上课，整数）\nstartLesson（当天第几节课开始上，整数）\nendLesson（上到当天第几节，整数）\nlocation（上课地点，字符串）
+        根据图中课程信息，提取为json数组。注意上课地点是否带有空格。如果只有一门课程，也要用中括号包裹json字符串。格式如下：\nname（课程名称,字符串）\nstartWeek（开始周数，整数）\nendWeek（结束周数，整数）\ndayOfWeek（周几上课，整数）\nstartLesson（当天第几节课开始上，整数）\nendLesson（上到当天第几节，整数）\nlocation（上课地点，字符串）
     </string>
     <string name="introduction_to_how_to_batch_add_course">
         在你的学校教务系统课程表界面中截图（或截长图），然后把以下提示词和图片一起发给AI，即可获取对应的JSON数组。
@@ -69,4 +69,8 @@
     <string name="location">地点：</string>
     <string name="default_lesson_location">默认课程地点</string>
     <string name="confirm">确认</string>
+    <string name="quick_set">快速修改</string>
+    <string name="quick_set_start_times_hint">在下面的编辑框编辑每节课的开始时间，以回车分隔。</string>
+    <string name="quick_set_start_times">快速编辑上课时间</string>
+    <string name="current_lessons">当前节数：</string>
 </resources>

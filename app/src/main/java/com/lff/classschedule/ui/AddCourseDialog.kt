@@ -50,15 +50,15 @@ class AddCourseDialog : DialogFragment() {
         ScreenUtil.setDialogWidth(this, requireContext(), 0.9f)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        // 手动加载布局
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.dialog_add_course, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 设置点击外部不关闭
+        dialog?.setCanceledOnTouchOutside(false)
 
         tvTitle = view.findViewById(R.id.tv_add_course_dialog_title)
         etName = view.findViewById(R.id.et_course_name)
@@ -73,7 +73,7 @@ class AddCourseDialog : DialogFragment() {
         // 设置点击外部不关闭
         dialog?.setCanceledOnTouchOutside(false)
 
-        val maxWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(requireContext())
+        val maxWeeks = SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_MAX_WEEKS)
         val weeks = (1..maxWeeks).map { "第 $it 周" }
         // 开始周：1-18 正序
         spStartWeek.adapter = ArrayAdapter(
@@ -91,7 +91,7 @@ class AddCourseDialog : DialogFragment() {
         val days = arrayOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
         spDay.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, days)
 
-        val maxLessons = SharedPreferenceConfig.getMaxLessonsPerDay(requireContext())
+        val maxLessons = SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)
         val lessons = (1..maxLessons).map { "第 $it 节" }
         val lessonAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, lessons)
         spStartLesson.adapter = lessonAdapter
@@ -147,7 +147,7 @@ class AddCourseDialog : DialogFragment() {
     private fun preFillData() {
         val course = arguments?.let { CompatibilityUtil.getParcelableCourse(it) } ?: return
 
-        val totalWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(requireContext()) // 获取当前设定的总周数
+        val totalWeeks = SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_MAX_WEEKS) // 获取当前设定的总周数
 
         tvTitle.text = "修改课程"
         etName.setText(course.name)

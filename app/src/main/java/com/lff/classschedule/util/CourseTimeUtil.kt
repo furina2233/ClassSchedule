@@ -8,9 +8,9 @@ object CourseTimeUtil {
     private val TAG = "CourseTimeUtil"
 
     fun getTimeStringByStartAndEndClassIndex(context: Context, startIndex: Int, endIndex: Int): String {
-        val duration = SharedPreferenceConfig.getDurationPerLesson(context)
+        val duration = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_DURATION_PER_LESSON)
 
-        val startTimes = SharedPreferenceConfig.getStartTimes(context)
+        val startTimes = SharedPreferenceConfig.getString(context, SharedPreferenceConfig.KEY_START_TIMES).split(",") as MutableList<String>
 
         try {
             val startTime = startTimes[startIndex - 1]

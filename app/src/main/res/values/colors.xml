@@ -15,4 +15,5 @@
     <color name="bg_course_card">#DEDEDE</color>
     <color name="red">#FF3F15</color>
     <color name="default_lesson_card_background">#8096C5</color>
+    <color name="class_schedule_column_header">#242424</color>
 </resources>

@@ -46,7 +46,7 @@
             android:layout_marginBottom="12dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintTop_toBottomOf="@id/tv_dialog_title"
-            app:layout_constraintBottom_toTopOf="@id/btn_add"
+            app:layout_constraintBottom_toTopOf="@+id/ll_add"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
         
@@ -58,16 +58,32 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
     
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add"
-            app:cornerRadius="20dp"
-            app:backgroundTint="@color/main_theme"
-            app:layout_constraintBottom_toTopOf="@id/btn_save"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:id="@+id/ll_add"
+                  android:orientation="horizontal"
+                  android:gravity="center"
+                  app:layout_constraintBottom_toTopOf="@+id/btn_save"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent">
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add"
+                app:cornerRadius="20dp"
+                app:backgroundTint="@color/main_theme"
+                app:layout_constraintBottom_toTopOf="@id/btn_save"/>
+        
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_quick_set_start_times"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/quick_set"
+                app:cornerRadius="20dp"
+                app:backgroundTint="@color/main_theme"/>
+    </LinearLayout>
+    
+    
     
     <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"

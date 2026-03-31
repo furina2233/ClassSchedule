@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent" android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="20dp"
+              android:layout_marginBottom="16dp">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_add_course_dialog_title"
+            android:text="@string/quick_set_start_times"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:gravity="center">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:text="@string/quick_set_start_times_hint"/>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      android:layout_gravity="start"
+                      android:layout_marginTop="16sp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/current_lessons"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:id="@+id/tv_current_lessons"
+                      android:text=""
+                      android:textColor="@color/main_theme"
+                      android:layout_marginStart="12sp"/>
+        </LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_start_times"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                app:boxStrokeColor="@color/main_theme"
+                app:hintTextColor="@color/light_gray">
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_start_times"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:scrollbars="vertical"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="@string/save"
+                app:backgroundTint="@color/main_theme"
+                app:cornerRadius="20dp"/>
+    </LinearLayout>
+</LinearLayout>

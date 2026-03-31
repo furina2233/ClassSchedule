@@ -47,16 +47,19 @@ class CustomSchoolScheduleDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        termCommencementTimeMonth = SharedPreferenceConfig.getTermCommencementTimeMonth(context)
-        termCommencementTimeDay = SharedPreferenceConfig.getTermCommencementTimeDay(context)
-        maxWeeks = SharedPreferenceConfig.getMaxWeeksPerSemester(context)
-        maxLessonsPerDay = SharedPreferenceConfig.getMaxLessonsPerDay(context)
-        durationPerLesson = SharedPreferenceConfig.getDurationPerLesson(context)
+        termCommencementTimeMonth = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
+        termCommencementTimeDay = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
+        maxWeeks = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_MAX_WEEKS)
+        maxLessonsPerDay = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)
+        durationPerLesson = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_DURATION_PER_LESSON)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 设置点击外部不关闭
+        dialog?.setCanceledOnTouchOutside(false)
 
         etTermCommencementTimeMonth = view.findViewById(R.id.et_term_commencement_time_month)
         etTermCommencementTimeDay = view.findViewById(R.id.et_term_commencement_time_day)
@@ -148,13 +151,11 @@ class CustomSchoolScheduleDialog
         }
 
         SharedPreferenceConfig.apply {
-            setTermCommencementTimeMonth(requireContext(), currentTermCommencementTimeMonth)
-            setTermCommencementTimeDay(requireContext(), currentTermCommencementTimeDay)
-            setMaxWeeksPerSemester(requireContext(), currentMaxWeeks)
-            setMaxLessonsPerDay(requireContext(), currentMaxLessonsPerDay)
-            setDurationPerLesson(requireContext(), currentDurationPerLesson)
-
-            clearCache()
+            setInt(requireContext(), KEY_TERM_COMMENCEMENT_TIME_MONTH, currentTermCommencementTimeMonth)
+            setInt(requireContext(), KEY_TERM_COMMENCEMENT_TIME_DAY, currentTermCommencementTimeDay)
+            setInt(requireContext(), KEY_MAX_WEEKS, currentMaxWeeks)
+            setInt(requireContext(), KEY_MAX_LESSONS_PER_DAY, currentMaxLessonsPerDay)
+            setInt(requireContext(), KEY_DURATION_PER_LESSON, currentDurationPerLesson)
         }
         Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show()
         Log.d(

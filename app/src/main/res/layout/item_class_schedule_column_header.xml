@@ -11,6 +11,6 @@
               android:id="@+id/tv_column_header"
               android:src="@drawable/bg_class_schedule_column_header_card"
               android:text="@string/one"
-              android:textColor="@color/black"
+              android:textColor="@color/class_schedule_column_header"
               android:gravity="center"/>
 </FrameLayout>

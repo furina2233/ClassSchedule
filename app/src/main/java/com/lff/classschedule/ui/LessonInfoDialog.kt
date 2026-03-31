@@ -46,6 +46,9 @@ class LessonInfoDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 设置点击外部不关闭
+        dialog?.setCanceledOnTouchOutside(false)
+
         tvLessonName = view.findViewById(R.id.tv_lesson_name)
         tvLessonTime = view.findViewById(R.id.tv_lesson_time)
         tvLessonLocation = view.findViewById(R.id.tv_lesson_location)

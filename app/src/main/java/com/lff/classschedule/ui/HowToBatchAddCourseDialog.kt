@@ -33,6 +33,9 @@ class HowToBatchAddCourseDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 设置点击外部不关闭
+        dialog?.setCanceledOnTouchOutside(false)
+
         btnIGotIt = view.findViewById(R.id.btn_i_got_it)
         btnIGotIt.setOnClickListener {
             dismiss()
