@@ -73,4 +73,6 @@
     <string name="quick_set_start_times_hint">在下面的编辑框编辑每节课的开始时间，以回车分隔。</string>
     <string name="quick_set_start_times">快速编辑上课时间</string>
     <string name="current_lessons">当前节数：</string>
+    <string name="remind_me">提醒我</string>
+    <string name="app_settings">应用设置</string>
 </resources>

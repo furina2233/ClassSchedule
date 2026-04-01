@@ -35,6 +35,26 @@
     <TextView android:layout_width="wrap_content" android:layout_height="30dp"
               android:text=""/>
     <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_remind_me"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/remind_me"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="5dp"
+            android:paddingHorizontal="10dp"
+            android:minHeight="30dp"
+            android:insetTop="5dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="20dp"
+            app:strokeColor="@color/main_theme"
+            app:strokeWidth="1.5dp"
+            app:backgroundTint="@color/white"
+            app:iconTint="@color/main_theme"
+            app:rippleColor="#20000000"/>
+    <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_close"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="wrap_content"

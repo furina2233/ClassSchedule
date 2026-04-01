@@ -30,7 +30,6 @@ class CustomSchoolScheduleDialog
     private var durationPerLesson: Int = 0
 
     private lateinit var etMaxWeeks: EditText
-    private lateinit var etMaxLessonsPerDay: EditText
     private lateinit var etDurationPerLesson: EditText
 
     private lateinit var etTermCommencementTimeMonth: EditText
@@ -50,7 +49,6 @@ class CustomSchoolScheduleDialog
         termCommencementTimeMonth = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
         termCommencementTimeDay = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
         maxWeeks = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_MAX_WEEKS)
-        maxLessonsPerDay = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)
         durationPerLesson = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_DURATION_PER_LESSON)
 
     }
@@ -64,7 +62,6 @@ class CustomSchoolScheduleDialog
         etTermCommencementTimeMonth = view.findViewById(R.id.et_term_commencement_time_month)
         etTermCommencementTimeDay = view.findViewById(R.id.et_term_commencement_time_day)
         etMaxWeeks = view.findViewById(R.id.et_set_max_weeks)
-        etMaxLessonsPerDay = view.findViewById(R.id.et_set_max_lessons_per_day)
         etDurationPerLesson = view.findViewById(R.id.et_set_duration_per_lesson)
 
         preFillData()
@@ -119,7 +116,6 @@ class CustomSchoolScheduleDialog
         val currentTermCommencementTimeMonth = etTermCommencementTimeMonth.text.toString().toIntOrNull()
         val currentTermCommencementTimeDay = etTermCommencementTimeDay.text.toString().toIntOrNull()
         val currentMaxWeeks = etMaxWeeks.text.toString().toIntOrNull()
-        val currentMaxLessonsPerDay = etMaxLessonsPerDay.text.toString().toIntOrNull()
         val currentDurationPerLesson = etDurationPerLesson.text.toString().toIntOrNull()
 
         // 校验
@@ -141,10 +137,6 @@ class CustomSchoolScheduleDialog
             Toast.makeText(context, "请输入正确的最大周数", Toast.LENGTH_SHORT).show()
             return
         }
-        if (currentMaxLessonsPerDay == null || currentMaxLessonsPerDay <= 0) {
-            Toast.makeText(context, "请输入正确的每天最大课程数", Toast.LENGTH_SHORT).show()
-            return
-        }
         if (currentDurationPerLesson == null || currentDurationPerLesson <= 0) {
             Toast.makeText(context, "请输入正确的课程时长", Toast.LENGTH_SHORT).show()
             return
@@ -154,13 +146,11 @@ class CustomSchoolScheduleDialog
             setInt(requireContext(), KEY_TERM_COMMENCEMENT_TIME_MONTH, currentTermCommencementTimeMonth)
             setInt(requireContext(), KEY_TERM_COMMENCEMENT_TIME_DAY, currentTermCommencementTimeDay)
             setInt(requireContext(), KEY_MAX_WEEKS, currentMaxWeeks)
-            setInt(requireContext(), KEY_MAX_LESSONS_PER_DAY, currentMaxLessonsPerDay)
             setInt(requireContext(), KEY_DURATION_PER_LESSON, currentDurationPerLesson)
         }
         Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show()
-        Log.d(
-            TAG,
-            "保存新学期信息成功，最大周数：$currentMaxWeeks，每天最大课程数：$currentMaxLessonsPerDay，课程时长：$currentDurationPerLesson"
+        Log.d(TAG,
+            "保存新学期信息成功，最大周数：$currentMaxWeeks，课程时长：$currentDurationPerLesson"
         )
     }
 
@@ -168,7 +158,6 @@ class CustomSchoolScheduleDialog
         etTermCommencementTimeMonth.setText(termCommencementTimeMonth.toString())
         etTermCommencementTimeDay.setText(termCommencementTimeDay.toString())
         etMaxWeeks.setText(maxWeeks.toString())
-        etMaxLessonsPerDay.setText(maxLessonsPerDay.toString())
         etDurationPerLesson.setText(durationPerLesson.toString())
     }
 }

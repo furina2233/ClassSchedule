@@ -5,10 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.lff.classschedule.R
+import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.pojo.Course
+import com.lff.classschedule.pojo.Lesson
+import com.lff.classschedule.receiver.LessonReminderReceiver
 import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.ScreenUtil
@@ -17,9 +21,9 @@ class LessonInfoDialog : DialogFragment() {
 
     companion object {
         const val TAG = "LessonInfoDialog"
-        fun newInstance(course: Course): DialogFragment {
+        fun newInstance(lesson: Lesson): DialogFragment {
             val args = Bundle()
-            args.putParcelable("course", course)
+            args.putParcelable("lesson", lesson)
             val fragment = LessonInfoDialog()
             fragment.arguments = args
             return fragment
@@ -30,9 +34,10 @@ class LessonInfoDialog : DialogFragment() {
     private lateinit var tvLessonTime: TextView
     private lateinit var tvLessonLocation: TextView
 
-    private lateinit var course: Course
+    private lateinit var lesson: Lesson
 
     private lateinit var btnClose: MaterialButton
+    private lateinit var btnRemindMe: MaterialButton
 
     override fun onStart() {
         super.onStart()
@@ -54,25 +59,29 @@ class LessonInfoDialog : DialogFragment() {
         tvLessonLocation = view.findViewById(R.id.tv_lesson_location)
 
         if (arguments != null) {
-            course = CompatibilityUtil.getParcelableCourse(requireArguments())!!
+            lesson = CompatibilityUtil.getParcelableLesson(requireArguments())!!
         }
 
-        tvLessonName.text = course.name
-        tvLessonTime.text = "${course.startWeek}-${course.endWeek}周  " +
-                "${CourseTimeUtil.getDayOfWeekText(course.dayOfWeek)}  " +
-                "  ${course.startLesson}-${course.endLesson}节  " +
-                "${
-                    CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
-                        requireContext(),
-                        course.startLesson,
-                        course.endLesson
-                    )
-                }"
-        tvLessonLocation.text = course.location
+        tvLessonName.text = lesson.name
+        tvLessonTime.text = "${lesson.course.startWeek}-${lesson.course.endWeek}周  " +
+                "${CourseTimeUtil.getDayOfWeekText(lesson.course.dayOfWeek)}  " +
+                "  ${lesson.startLesson}-${lesson.endLesson}节  " +
+                CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
+                    requireContext(),
+                    lesson.startLesson,
+                    lesson.endLesson
+                )
+        tvLessonLocation.text = lesson.course.location
 
         btnClose = view.findViewById(R.id.btn_close)
         btnClose.setOnClickListener {
             dismiss()
+        }
+
+        btnRemindMe = view.findViewById(R.id.btn_remind_me)
+        btnRemindMe.setOnClickListener {
+            val result = LessonReminderReceiver.setLessonReminder(requireContext(), lesson)
+            Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
         }
     }
 }

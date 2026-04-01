@@ -59,7 +59,7 @@ class SetStartTimesDialog : DialogFragment() {
         llContainer = view.findViewById(R.id.ll_set_start_times)
         scrollView = view.findViewById(R.id.scroll_view)
 
-        val currentMaxLessons = SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)
+        val currentMaxLessons = SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(",").size
         Log.d(TAG, "当前的课程开始时间是：${startTimes.joinToString(",")}")
         for (i in 1..currentMaxLessons) {
             addLessonTimeCard(i)

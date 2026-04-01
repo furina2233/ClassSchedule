@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.lff.classschedule.R
+import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.util.ScreenUtil
 import org.json.JSONArray
@@ -109,13 +110,13 @@ class BatchAddCourseDialog : DialogFragment() {
 
     private fun isCourseValid(json: JSONObject): Boolean {
         return try {
-            // 1. 校验必填字段是否存在且类型正确 (has() 检查键，opt... 检查类型)
+            // 校验字段是否存在
             val hasFields = json.has("name") && json.has("startWeek") &&
                     json.has("endWeek") && json.has("dayOfWeek") &&
                     json.has("startLesson") && json.has("endLesson") &&
                     json.has("location")
 
-            // 2. 进一步检查类型（利用 opt 系列，如果类型不对会返回默认值）
+            // 校验字段类型
             val typeCheck = json.optString("name").isNotEmpty() &&
                     json.opt("startWeek") is Int &&
                     json.opt("endWeek") is Int &&
@@ -124,11 +125,13 @@ class BatchAddCourseDialog : DialogFragment() {
                     json.opt("endLesson") is Int &&
                     json.optString("location") is String
 
-            // 3. 业务逻辑校验（可选：比如开始周不能大于结束周）
-            val businessCheck = json.getInt("startWeek") <= json.getInt("endWeek") &&
-                    json.getInt("startLesson") <= json.getInt("endLesson")
+            // 逻辑校验：开始周要小于结束周，开始节数要小于结束节数，结束节数要小于等于最大节数
+            val maxLesson = SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(",").size
+            val logicCheck = json.getInt("startWeek") <= json.getInt("endWeek") &&
+                    json.getInt("startLesson") <= json.getInt("endLesson") &&
+                    json.getInt("endLesson") <= maxLesson
 
-            hasFields && typeCheck && businessCheck
+            hasFields && typeCheck && logicCheck
         } catch (e: Exception) {
             false
         }

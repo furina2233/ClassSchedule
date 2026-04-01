@@ -56,20 +56,6 @@
                   android:orientation="horizontal"
                   android:layout_marginBottom="12dp">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:text="@string/max_lessons_per_day"
-                  android:textSize="16sp"
-                  android:layout_marginEnd="12sp"/>
-        <EditText android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:id="@+id/et_set_max_lessons_per_day"
-                  android:hint="@string/set_max_lessons_per_day_hint"
-                  android:inputType="number"
-                  android:digits="0123456789"/>
-    </LinearLayout>
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:layout_marginBottom="12dp">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:text="@string/duration_per_lesson"
                   android:textSize="16sp"
                   android:layout_marginEnd="12sp"/>

@@ -12,9 +12,11 @@ import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.pojo.Lesson
 import com.lff.classschedule.ui.LessonInfoDialog
 import com.lff.classschedule.util.ColorUtil
+import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.ViewUtil
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 class HomeActivity : AppCompatActivity() {
@@ -71,7 +73,7 @@ class HomeActivity : AppCompatActivity() {
             findViewById(R.id.ll_sunday_container)
         )
 
-        val maxLessons = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)
+        val maxLessons = SharedPreferenceConfig.getString(this, SharedPreferenceConfig.KEY_START_TIMES).split(",").size
 
         for (i in 1..7) {
             val dayOfWeek = DayOfWeek.of(i)
@@ -119,7 +121,7 @@ class HomeActivity : AppCompatActivity() {
         card.layoutParams = params
 
         card.setOnClickListener {
-            val dialog = LessonInfoDialog.newInstance(lesson.course)
+            val dialog = LessonInfoDialog.newInstance(lesson)
             dialog.show(supportFragmentManager, LessonInfoDialog.TAG)
         }
 
@@ -139,7 +141,7 @@ class HomeActivity : AppCompatActivity() {
     private fun loadClassScheduleTable() {
         val llColumnHeader = findViewById<LinearLayout>(R.id.ll_column_header)
         llColumnHeader.removeAllViews()
-        for (i in 1..SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_LESSONS_PER_DAY)) {
+        for (i in 1..SharedPreferenceConfig.getString(this, SharedPreferenceConfig.KEY_START_TIMES).split(",").size) {
             val headerItem = layoutInflater.inflate(R.layout.item_class_schedule_column_header, llColumnHeader, false)
             headerItem.findViewById<TextView>(R.id.tv_column_header).text = "$i"
             llColumnHeader.addView(headerItem)
@@ -148,12 +150,37 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun buildLessonMap() {
+        val startMonth = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
+        val startDay = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
+
+        // 确定第一周周一的日期(参考calculateCurrentWeek的写法)
+        val today = LocalDate.now()
+        var startDoc = LocalDate.of(today.year, startMonth, startDay)
+        if (startDoc.isAfter(today.plusMonths(1))) {
+            startDoc = startDoc.minusYears(1)
+        }
+        val firstMonday = startDoc.with(DayOfWeek.MONDAY)
+
         for (dayOfWeek in 1..7) {
             val lessons = mutableListOf<Lesson>()
             val iterator = courseSet.iterator()
+
+            // 公式：第一周周一 + (选中周 - 1) * 7 + (星期几 - 1)
+            val targetDate = firstMonday
+                .plusWeeks((currentWeek - 1).toLong())
+                .plusDays((dayOfWeek - 1).toLong())
+
+
             while (iterator.hasNext()) {
                 val course = iterator.next()
                 if (course.dayOfWeek == dayOfWeek && currentWeek >= course.startWeek && currentWeek <= course.endWeek) {
+                    val timeRange = CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
+                        this, course.startLesson, course.endLesson
+                    )
+                    val startTimeStr = timeRange.split("-")[0]
+                    val (hour, minute) = startTimeStr.split(":").map { it.toInt() }
+                    val lessonDateTime = targetDate.atTime(hour, minute)
+
                     lessons.add(
                         Lesson(
                             course.name,
@@ -161,6 +188,7 @@ class HomeActivity : AppCompatActivity() {
                             course.endLesson,
                             DayOfWeek.of(course.dayOfWeek),
                             "${course.name}@${course.location}",
+                            lessonDateTime,
                             course
                         )
                     )
@@ -237,6 +265,13 @@ class HomeActivity : AppCompatActivity() {
                 when (it.itemId) {
                     R.id.menu_course_setting -> {
                         val intent = Intent(this, CoursesSettingActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        startActivity(intent)
+                        true
+                    }
+
+                    R.id.menu_app_settings -> {
+                        val intent = Intent(this, AppSettingsActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
                         startActivity(intent)
                         true
