@@ -44,6 +44,10 @@ class AppSettingsActivity : AppCompatActivity() {
         spnSetRemindWay = findViewById(R.id.spn_set_remind_way)
         tvCurrentLessons = findViewById(R.id.tv_current_lessons)
         etStartTimes = findViewById(R.id.et_start_times)
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         setupEtTermCommencementTimeMonth()
         setupEtTermCommencementTimeDay()
