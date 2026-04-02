@@ -1,5 +1,7 @@
 package com.lff.classschedule.receiver
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -24,6 +26,7 @@ import com.lff.classschedule.util.CourseTimeUtil
 import java.time.LocalDateTime
 import java.time.ZoneId
 import androidx.core.net.toUri
+import com.lff.classschedule.util.PermissionUtil
 
 class LessonReminderReceiver: BroadcastReceiver() {
 
@@ -32,20 +35,15 @@ class LessonReminderReceiver: BroadcastReceiver() {
         const val CHANNEL_ID = "lesson_reminder_channel"
 
         fun setLessonReminder(context: Context, lesson: Lesson): String {
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-
-            if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-                showNotificationPermissionDialog(context)
+            if (!PermissionUtil.hasNotificationPermission(context)){
+                val message = "需要通知权限和精确闹钟权限，否则无法提醒你。\n注意：请将app的省电策略调整为无限制。否则也无法提醒你。"
+                PermissionUtil.goToNotificationSettings(context as Activity,message)
                 return "请先开启通知权限"
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-                showGetPermissionDialog(context)
-                return "请先开启精确闹钟权限"
             }
             return performSetAlarm(context, lesson)
         }
 
+        @SuppressLint("ScheduleExactAlarm")  // 在PermissionUtil中进行检查，不在这里检查
         private fun performSetAlarm(context: Context, lesson: Lesson): String {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val description = CourseTimeUtil.getTimeStringByStartAndEndClassIndex(context, lesson.startLesson, lesson.endLesson) +
@@ -106,21 +104,6 @@ class LessonReminderReceiver: BroadcastReceiver() {
                     getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.main_theme, null))
                 }
         }
-
-        private fun showGetPermissionDialog(context: Context){
-            AlertDialog.Builder(context)
-                .setTitle("需要权限")
-                .setMessage("请在设置中开启“闹钟与提醒”权限，否则无法提醒你。")
-                .setPositiveButton("去开启") { _, _ ->
-                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-                        data = Uri.fromParts("package", context.packageName, null)
-                    }
-                    context.startActivity(intent)
-                }
-                .setNegativeButton("取消", null)
-                .show()
-                .getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.main_theme))
-        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -133,9 +116,7 @@ class LessonReminderReceiver: BroadcastReceiver() {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel = NotificationChannel(channelId, "Lesson Reminder", NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "上课提醒"
-            }
+            val channel = NotificationChannel(channelId, "上课提醒", NotificationManager.IMPORTANCE_HIGH)
             manager.createNotificationChannel(channel)
         }
 

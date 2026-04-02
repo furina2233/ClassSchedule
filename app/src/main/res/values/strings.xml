@@ -75,4 +75,8 @@
     <string name="current_lessons">当前节数：</string>
     <string name="remind_me">提醒我</string>
     <string name="app_settings">应用设置</string>
+    <string name="minute">分钟</string>
+    <string name="reminder_time">上课前多久提醒我：</string>
+    <string name="remind_way">提醒方式：</string>
+    <string name="zero">0</string>
 </resources>

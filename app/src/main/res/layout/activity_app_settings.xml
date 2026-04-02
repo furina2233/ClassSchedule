@@ -25,7 +25,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
-<!--        只是为了统一任务栏，不需要实际功能-->
+        <!--        只是为了统一任务栏，不需要实际功能-->
         <ImageButton
                 android:id="@+id/btn_more"
                 android:layout_width="48dp"
@@ -33,9 +33,9 @@
                 android:layout_marginEnd="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_more_horiz"
-                app:layout_constraintBottom_toBottomOf="@id/tv_class_schedule"
+                app:layout_constraintBottom_toBottomOf="@id/tv_app_settings"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_class_schedule"
+                app:layout_constraintTop_toTopOf="@id/tv_app_settings"
                 android:visibility="invisible"
                 android:clickable="false"
                 app:tint="@color/gray"/>
@@ -48,9 +48,10 @@
                       android:orientation="vertical"
                       android:layout_marginHorizontal="15dp"
                       android:id="@+id/ll_app_settings_container"
+                      android:divider="@color/light_gray"
                       android:showDividers="middle">
             <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_width="match_parent" android:layout_height="60dp"
                     android:orientation="horizontal">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:text="@string/term_commencement_time"
@@ -61,6 +62,8 @@
                 <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                               android:orientation="horizontal"
                               android:layout_weight="1"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintBottom_toBottomOf="parent"
                               app:layout_constraintEnd_toEndOf="parent">
                     <EditText android:layout_width="80dp" android:layout_height="wrap_content"
                               android:id="@+id/et_term_commencement_time_month"
@@ -80,9 +83,10 @@
                               android:textSize="16sp"/>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
-                                                               android:layout_height="wrap_content"
-                                                               android:orientation="horizontal">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                           android:text="@string/max_weeks"
                           android:textSize="16sp"
@@ -94,7 +98,135 @@
                           android:hint="@string/set_max_weeks_hint"
                           android:inputType="number"
                           android:digits="0123456789"
+                          app:layout_constraintTop_toTopOf="parent"
+                          app:layout_constraintBottom_toBottomOf="parent"
                           app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/duration_per_lesson"
+                          android:textSize="16sp"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent"
+                          app:layout_constraintBottom_toBottomOf="parent"/>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:orientation="horizontal"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintBottom_toBottomOf="parent"
+                              app:layout_constraintEnd_toEndOf="parent">
+                    <EditText android:layout_width="120dp" android:layout_height="wrap_content"
+                              android:id="@+id/et_set_duration_per_lesson"
+                              android:hint="@string/set_duration_per_lesson_hint"
+                              android:inputType="number"
+                              android:digits="0123456789"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintBottom_toBottomOf="parent"
+                              app:layout_constraintEnd_toEndOf="parent"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:text="@string/minute"
+                              android:textSize="16sp"/>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/reminder_time"
+                          android:textSize="16sp"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent"
+                          app:layout_constraintBottom_toBottomOf="parent"/>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:orientation="horizontal"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintBottom_toBottomOf="parent"
+                              app:layout_constraintEnd_toEndOf="parent">
+                    <EditText android:layout_width="120dp" android:layout_height="wrap_content"
+                              android:id="@+id/et_set_reminder_time"
+                              android:hint=""
+                              android:inputType="number"
+                              android:digits="0123456789"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintBottom_toBottomOf="parent"
+                              app:layout_constraintEnd_toEndOf="parent"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:text="@string/minute"
+                              android:textSize="16sp"/>
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/remind_way"
+                          android:textSize="16sp"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent"
+                          app:layout_constraintBottom_toBottomOf="parent"/>
+                <Spinner android:layout_width="wrap_content" android:layout_height="wrap_content"
+                         android:id="@+id/spn_set_remind_way"
+                         app:layout_constraintTop_toTopOf="parent"
+                         app:layout_constraintBottom_toBottomOf="parent"
+                         app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:id="@+id/tv_course_time"
+                          android:text="@string/course_time"
+                          android:textSize="16sp"
+                          android:layout_marginTop="18dp"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:id="@+id/ll_current_lessons"
+                        android:orientation="horizontal"
+                        android:layout_gravity="start"
+                        android:layout_marginTop="16sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/til_start_times">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:text="@string/current_lessons"
+                              android:layout_marginEnd="30dp"
+                              app:layout_constraintEnd_toEndOf="parent"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintBottom_toBottomOf="parent"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                              android:id="@+id/tv_current_lessons"
+                              android:text="@string/zero"
+                              android:textColor="@color/main_theme"
+                              android:layout_marginEnd="10sp"
+                              app:layout_constraintEnd_toEndOf="parent"
+                              app:layout_constraintTop_toTopOf="parent"
+                              app:layout_constraintBottom_toBottomOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_start_times"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint=""
+                        app:boxStrokeColor="@color/main_theme"
+                        app:hintTextColor="@color/light_gray"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_course_time">
+                    <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_start_times"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:gravity="top"
+                            android:inputType="textMultiLine"
+                            android:scrollbars="vertical"/>
+                </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

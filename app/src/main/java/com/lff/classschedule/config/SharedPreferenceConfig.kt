@@ -15,6 +15,7 @@ object SharedPreferenceConfig {
     const val KEY_TERM_COMMENCEMENT_TIME_MONTH = "term_commencement_time_month"
     const val KEY_TERM_COMMENCEMENT_TIME_DAY = "term_commencement_time_day"
     const val KEY_REMINDER_TIME = "reminder_time"
+    const val KEY_REMIND_WAY = "remind_way"
 
     private val defaultValuesMap: MutableMap<String, Any> = mutableMapOf()
 
@@ -24,10 +25,17 @@ object SharedPreferenceConfig {
         defaultValuesMap[KEY_DURATION_PER_LESSON] = 45
         defaultValuesMap[KEY_IS_FIRST_LAUNCH] = true
         defaultValuesMap[KEY_IS_FIRST_ADD_COURSE] = true
-        defaultValuesMap[KEY_START_TIMES] = "8:00,9:50,10:40,11:30,12:20,14:00,14:50,15:50,16:40,17:30,19:00,19:50,20:40"
+        defaultValuesMap[KEY_START_TIMES] = "8:00,8:50,9:50,10:40,11:30,14:00,14:50,15:50,16:40,17:30,19:00,19:50,20:40"
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_MONTH] = 9
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_DAY] = 1
         defaultValuesMap[KEY_REMINDER_TIME] = 10
+        defaultValuesMap[KEY_REMIND_WAY] = 0
+    }
+
+    object RemindWay {
+        const val WAY_CALENDAR_SCHEDULE = 0
+        const val WAY_ALARM = 1
+        const val WAY_NOTIFICATION = 2
     }
 
     private fun getPrefs(context: Context) =
