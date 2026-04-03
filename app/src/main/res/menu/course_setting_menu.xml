@@ -6,10 +6,4 @@
     <item
             android:id="@+id/menu_batch_delete"
             android:title="@string/batch_delete"/>
-    <item
-            android:id="@+id/menu_custom_school_schedule"
-            android:title="@string/custom_school_schedule"/>
-    <item
-            android:id="@+id/menu_set_start_times"
-            android:title="@string/set_start_times"/>
 </menu>

@@ -7,7 +7,6 @@ object SharedPreferenceConfig {
     private const val PREF_NAME = "class_schedule_config"
 
     const val KEY_MAX_WEEKS = "max_weeks"
-    // const val KEY_MAX_LESSONS_PER_DAY = "max_lessons_per_day"
     const val KEY_DURATION_PER_LESSON = "duration_per_lesson"
     const val KEY_IS_FIRST_LAUNCH = "is_first_launch"
     const val KEY_IS_FIRST_ADD_COURSE = "is_first_add_course"
@@ -21,7 +20,6 @@ object SharedPreferenceConfig {
 
     init {
         defaultValuesMap[KEY_MAX_WEEKS] = 18
-        // defaultValuesMap[KEY_MAX_LESSONS_PER_DAY] = 13
         defaultValuesMap[KEY_DURATION_PER_LESSON] = 45
         defaultValuesMap[KEY_IS_FIRST_LAUNCH] = true
         defaultValuesMap[KEY_IS_FIRST_ADD_COURSE] = true
@@ -29,7 +27,7 @@ object SharedPreferenceConfig {
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_MONTH] = 9
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_DAY] = 1
         defaultValuesMap[KEY_REMINDER_TIME] = 10
-        defaultValuesMap[KEY_REMIND_WAY] = 0
+        defaultValuesMap[KEY_REMIND_WAY] = 1
     }
 
     object RemindWay {

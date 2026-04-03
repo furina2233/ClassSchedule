@@ -16,4 +16,6 @@
     <color name="red">#FF3F15</color>
     <color name="default_lesson_card_background">#8096C5</color>
     <color name="class_schedule_column_header">#242424</color>
+    <color name="high_light_background">#E9F1FB</color>
+    <color name="high_light_foreground">#4674C2</color>
 </resources>

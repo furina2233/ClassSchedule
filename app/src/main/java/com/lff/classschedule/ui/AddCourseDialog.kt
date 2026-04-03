@@ -14,7 +14,6 @@ import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.ScreenUtil
 
-// TODO:把AddCourseDialog的构造函数改为无参的，否则翻转手机时会出现RuntimeException
 class AddCourseDialog : DialogFragment() {
 
     companion object {

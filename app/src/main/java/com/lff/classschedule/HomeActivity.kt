@@ -25,6 +25,7 @@ class HomeActivity : AppCompatActivity() {
         const val TAG = "HomeActivity"
     }
 
+    private lateinit var firstMonday: LocalDate  // 开学后的第一个周一的日期
     private lateinit var btnMore: ImageButton
 
     private lateinit var spinnerSelectWeek: Spinner
@@ -34,6 +35,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var courseSet: MutableSet<Course>
     private val lessonMap: MutableMap<DayOfWeek, List<Lesson>> = mutableMapOf()
     private var currentWeek: Int = 0
+    private lateinit var tvMonth: TextView
+    private lateinit var dateTextViews: List<TextView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +46,24 @@ class HomeActivity : AppCompatActivity() {
 
         btnMore = findViewById(R.id.btn_more)
         setupPopupMenu(btnMore)
+
+        tvMonth = findViewById(R.id.tv_month)
+        dateTextViews = listOf(
+            findViewById(R.id.tv_monday_day),
+            findViewById(R.id.tv_tuesday_day),
+            findViewById(R.id.tv_wednesday_day),
+            findViewById(R.id.tv_thursday_day),
+            findViewById(R.id.tv_friday_day),
+            findViewById(R.id.tv_saturday_day),
+            findViewById(R.id.tv_sunday_day)
+        )
     }
 
     override fun onResume() {
         super.onResume()
 
         ColorUtil.resetColorPool()
+        getFirstMonday()
 
         // 当前周选择
         spinnerSelectWeek = findViewById(R.id.spinner_select_week)
@@ -60,6 +75,41 @@ class HomeActivity : AppCompatActivity() {
         loadClassScheduleTable()
 
         refreshSchedule()
+    }
+
+    fun getFirstMonday() {
+        val startMonth = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
+        val startDay = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
+
+        val today = LocalDate.now()
+        var startDoc = LocalDate.of(today.year, startMonth, startDay)
+        if (startDoc.isAfter(today.plusMonths(1))) {
+            startDoc = startDoc.minusYears(1)
+        }
+        firstMonday = startDoc.with(DayOfWeek.MONDAY)
+    }
+
+    private fun updateDateHeader() {
+        // 计算当前选中周的周一日期
+        val currentMonday = firstMonday.plusWeeks((currentWeek - 1).toLong())
+        // 设置月份，如果跨月，以周一所属月份为准
+        tvMonth.text = "${currentMonday.monthValue}月"
+
+        for (i in 0..6) {
+            val dateOfRow = currentMonday.plusDays(i.toLong())
+            dateTextViews[i].text = dateOfRow.dayOfMonth.toString()
+            // 如果是今天，显示高亮
+            if (dateOfRow == LocalDate.now()) {
+                dateTextViews[i].setTextColor(getColor(R.color.high_light_foreground))
+                (dateTextViews[i].parent as LinearLayout).apply {
+                    setBackgroundColor(getColor(R.color.high_light_background))
+                    (getChildAt(0) as TextView).setTextColor(R.color.high_light_foreground)
+                }
+                findViewById<LinearLayout>(R.id.ll_column_container).getChildAt(i).setBackgroundColor(getColor(R.color.high_light_background))
+            } else {
+                dateTextViews[i].setTextColor(getColor(R.color.gray))
+            }
+        }
     }
 
     private fun fillClassSchedule() {
@@ -150,17 +200,6 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun buildLessonMap() {
-        val startMonth = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
-        val startDay = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
-
-        // 确定第一周周一的日期(参考calculateCurrentWeek的写法)
-        val today = LocalDate.now()
-        var startDoc = LocalDate.of(today.year, startMonth, startDay)
-        if (startDoc.isAfter(today.plusMonths(1))) {
-            startDoc = startDoc.minusYears(1)
-        }
-        val firstMonday = startDoc.with(DayOfWeek.MONDAY)
-
         for (dayOfWeek in 1..7) {
             val lessons = mutableListOf<Lesson>()
             val iterator = courseSet.iterator()
@@ -210,7 +249,7 @@ class HomeActivity : AppCompatActivity() {
         val termCommencementTimeMonth = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
         val termCommencementTimeDay = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
 
-        currentWeek = calculateCurrentWeek(termCommencementTimeMonth, termCommencementTimeDay)
+        currentWeek = calculateCurrentWeek()
 
         spinnerSelectWeek.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -232,21 +271,13 @@ class HomeActivity : AppCompatActivity() {
 
     private fun refreshSchedule() {
         ColorUtil.resetColorPool()
+        updateDateHeader()
         buildLessonMap()
         fillClassSchedule()
     }
 
-    private fun calculateCurrentWeek(startMonth: Int, startDay: Int): Int {
+    private fun calculateCurrentWeek(): Int {
         val today = LocalDate.now()
-        var startDoc = LocalDate.of(today.year, startMonth, startDay)
-
-        // 如果开学日期（如9月）比今天（如1月）晚，说明跨年了
-        if (startDoc.isAfter(today.plusMonths(1))) {
-            startDoc = startDoc.minusYears(1)
-        }
-
-        // 对齐周一，当学期开始日期不是周一时，使下一个周一为第二周的开始
-        val firstMonday = startDoc.with(DayOfWeek.MONDAY)
 
         // 计算天数差
         val daysBetween = ChronoUnit.DAYS.between(firstMonday, today)

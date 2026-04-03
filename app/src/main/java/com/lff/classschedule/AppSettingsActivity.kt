@@ -1,6 +1,8 @@
 package com.lff.classschedule
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -173,7 +175,6 @@ class AppSettingsActivity : AppCompatActivity() {
                         }
                     }
                     SharedPreferenceConfig.RemindWay.WAY_ALARM -> {}  // 通过系统闹钟app设置闹钟权限不需要用户手动授予
-                    // TODO:需要进入设置页面时就触发且如果两个权限都缺失，设置了其中一个之后还要再触发
                     SharedPreferenceConfig.RemindWay.WAY_NOTIFICATION -> {
                         if (!PermissionUtil.hasNotificationPermission(this@AppSettingsActivity)){
                             val message = "需要通知权限和精确闹钟权限，否则无法提醒你。\n注意：请将app的省电策略调整为无限制。否则也无法提醒你。"
@@ -216,5 +217,14 @@ class AppSettingsActivity : AppCompatActivity() {
                 SharedPreferenceConfig.setString(this, SharedPreferenceConfig.KEY_START_TIMES, startTimes.joinToString(","))
             }
         }
+        etStartTimes.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                val text = editable.toString()
+                tvCurrentLessons.text = text.split("\n").size.toString()
+            }
+            override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
     }
 }

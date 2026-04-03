@@ -48,42 +48,159 @@
                  android:id="@+id/spinner_select_week"
                  android:dropDownHeight="100dp"/>
     </LinearLayout>
+    
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                   android:id="@+id/ll_row_header"
                   android:orientation="horizontal"
                   android:layout_marginTop="5dp"
                   app:layout_constraintTop_toBottomOf="@+id/ll_select_week">
-        <TextView android:layout_width="@dimen/default_header_width" android:layout_height="wrap_content"
-                  android:text=""/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/Monday"
-                  android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/Tuesday"
-                  android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/Wednesday"
-                  android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/Thursday"
-                  android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/Friday"
-                  android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/Saturday"
-                  android:gravity="center"/>
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                  android:layout_weight="1"
-                  android:text="@string/Sunday"
-                  android:gravity="center"/>
+        <TextView android:layout_width="@dimen/default_header_width" android:layout_height="match_parent"
+                  android:id="@+id/tv_month"
+                  android:gravity="center|bottom"
+                  android:textStyle="bold"
+                  android:text="@string/January"/>
+        
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Monday"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_monday_day"
+                    android:text="@string/zero"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+        </LinearLayout>
+        
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Tuesday"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_tuesday_day"
+                    android:text="@string/zero"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+        </LinearLayout>
+        
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Wednesday"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_wednesday_day"
+                    android:text="@string/zero"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+        </LinearLayout>
+        
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Thursday"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_thursday_day"
+                    android:text="@string/zero"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+        </LinearLayout>
+        
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Friday"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_friday_day"
+                    android:text="@string/zero"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+        </LinearLayout>
+        
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Saturday"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_saturday_day"
+                    android:text="@string/zero"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+        </LinearLayout>
+        
+        <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Sunday"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_sunday_day"
+                    android:text="@string/zero"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+        </LinearLayout>
     </LinearLayout>
+    
     <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
                 android:id="@+id/sv_class_schedule"
                 android:layout_marginTop="5dp"

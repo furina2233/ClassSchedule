@@ -14,6 +14,7 @@ import com.lff.classschedule.R
 import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.util.ScreenUtil
 
+@Deprecated("现在在设置页面中进行相关设置")
 class SetStartTimesDialog : DialogFragment() {
     companion object {
         const val TAG = "SetStartTimesDialog"

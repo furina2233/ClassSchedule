@@ -74,7 +74,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         // 首次使用时
         if (SharedPreferenceConfig.getBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_ADD_COURSE)) {
             SharedPreferenceConfig.setBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_ADD_COURSE, false)
-            setCustomSchoolSchedule()
+            startActivity(Intent(this, AppSettingsActivity::class.java))
         }
     }
 
@@ -133,16 +133,6 @@ class CoursesSettingActivity : AppCompatActivity() {
 
                 R.id.menu_batch_delete -> {
                     batchDeleteCourse()
-                    true
-                }
-
-                R.id.menu_custom_school_schedule -> {
-                    setCustomSchoolSchedule()
-                    true
-                }
-
-                R.id.menu_set_start_times -> {
-                    setStartTimes()
                     true
                 }
 
@@ -294,21 +284,6 @@ class CoursesSettingActivity : AppCompatActivity() {
         }
     }
 
-    private fun setStartTimes() {
-        val dialog = SetStartTimesDialog()
-        dialog.show(supportFragmentManager, SetStartTimesDialog.TAG)
-        supportFragmentManager.setFragmentResultListener(SetStartTimesDialog.TAG, this) { _, bundle ->
-            val newStartTimes = bundle.getStringArray("new_start_times")
-            newStartTimes?.let { SharedPreferenceConfig.setString(this, SharedPreferenceConfig.KEY_START_TIMES, it.joinToString(",")) }
-            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "已保存新的课程开始时间：${newStartTimes?.joinToString(",")}")
-        }
-    }
-
-    private fun setCustomSchoolSchedule() {
-        val dialog = CustomSchoolScheduleDialog()
-        dialog.show(supportFragmentManager, CustomSchoolScheduleDialog.TAG)
-    }
 
     private fun loadCoursesFromDb() {
         val container = findViewById<LinearLayout>(R.id.ll_course_list)
