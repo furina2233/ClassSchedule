@@ -20,7 +20,6 @@ import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.ui.AddCourseDialog
 import com.lff.classschedule.ui.BatchAddCourseDialog
 import com.lff.classschedule.ui.CustomSchoolScheduleDialog
-import com.lff.classschedule.ui.SetStartTimesDialog
 import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
 

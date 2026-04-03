@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -18,7 +17,7 @@ import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.util.ScreenUtil
 
 @Deprecated("现在在设置页面中进行相关设置")
-class QuickSetStartTimesDialog: DialogFragment() {
+class QuickSetStartTimesDialog : DialogFragment() {
 
     companion object {
         const val TAG = "QuickSetStartTimesDialog"
@@ -42,7 +41,9 @@ class QuickSetStartTimesDialog: DialogFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        startTimes = SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(",").toTypedArray()
+        startTimes =
+            SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(",")
+                .toTypedArray()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,10 +72,11 @@ class QuickSetStartTimesDialog: DialogFragment() {
         btnSave.setOnClickListener {
             val startTimes = etStartTimes.text.toString().split("\n").toTypedArray().map {
                 it.trim().replace("：", ":")
-            }.filter { it.isNotEmpty()
+            }.filter {
+                it.isNotEmpty()
             }.toTypedArray()
             try {
-                for (time in startTimes){
+                for (time in startTimes) {
                     val timeArray = time.split(":")
                     val h = timeArray[0].toInt()
                     val m = timeArray[1].toInt()
@@ -82,7 +84,7 @@ class QuickSetStartTimesDialog: DialogFragment() {
                         throw Exception()
                     }
                 }
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Toast.makeText(requireContext(), "请输入正确的内容", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }

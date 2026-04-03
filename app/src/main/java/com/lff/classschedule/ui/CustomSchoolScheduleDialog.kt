@@ -47,8 +47,10 @@ class CustomSchoolScheduleDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        termCommencementTimeMonth = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
-        termCommencementTimeDay = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
+        termCommencementTimeMonth =
+            SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
+        termCommencementTimeDay =
+            SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
         maxWeeks = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_MAX_WEEKS)
         durationPerLesson = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_DURATION_PER_LESSON)
 
@@ -150,7 +152,8 @@ class CustomSchoolScheduleDialog
             setInt(requireContext(), KEY_DURATION_PER_LESSON, currentDurationPerLesson)
         }
         Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show()
-        Log.d(TAG,
+        Log.d(
+            TAG,
             "保存新学期信息成功，最大周数：$currentMaxWeeks，课程时长：$currentDurationPerLesson"
         )
     }

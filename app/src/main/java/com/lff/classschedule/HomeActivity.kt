@@ -16,7 +16,6 @@ import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.ViewUtil
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 class HomeActivity : AppCompatActivity() {
@@ -98,16 +97,22 @@ class HomeActivity : AppCompatActivity() {
         for (i in 0..6) {
             val dateOfRow = currentMonday.plusDays(i.toLong())
             dateTextViews[i].text = dateOfRow.dayOfMonth.toString()
+
+            val parentLayout = dateTextViews[i].parent as LinearLayout  // 放置周几和该日日期的容器
+            val dayOfWeekTextView = parentLayout.getChildAt(0) as TextView
+            val column = findViewById<LinearLayout>(R.id.ll_column_container).getChildAt(i)  // 放置当日课程的容器
+
             // 如果是今天，显示高亮
             if (dateOfRow == LocalDate.now()) {
                 dateTextViews[i].setTextColor(getColor(R.color.high_light_foreground))
-                (dateTextViews[i].parent as LinearLayout).apply {
-                    setBackgroundColor(getColor(R.color.high_light_background))
-                    (getChildAt(0) as TextView).setTextColor(resources.getColor(R.color.high_light_foreground))
-                }
-                findViewById<LinearLayout>(R.id.ll_column_container).getChildAt(i).setBackgroundColor(getColor(R.color.high_light_background))
+                parentLayout.setBackgroundColor(getColor(R.color.high_light_background))
+                dayOfWeekTextView.setTextColor(getColor(R.color.high_light_foreground))
+                column.setBackgroundColor(getColor(R.color.high_light_background))
             } else {
                 dateTextViews[i].setTextColor(getColor(R.color.gray))
+                dayOfWeekTextView.setTextColor(getColor(R.color.title_text))
+                parentLayout.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+                column.setBackgroundColor(android.graphics.Color.TRANSPARENT)
             }
         }
     }
@@ -306,7 +311,9 @@ class HomeActivity : AppCompatActivity() {
                     }
 
                     R.id.menu_about -> {
-                        TODO("关于页面")
+                        val intent = Intent(this, AboutActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        startActivity(intent)
                         true
                     }
 

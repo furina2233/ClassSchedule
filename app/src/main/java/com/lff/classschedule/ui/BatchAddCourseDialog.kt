@@ -126,7 +126,8 @@ class BatchAddCourseDialog : DialogFragment() {
                     json.optString("location") is String
 
             // 逻辑校验：开始周要小于结束周，开始节数要小于结束节数，结束节数要小于等于最大节数
-            val maxLesson = SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(",").size
+            val maxLesson = SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES)
+                .split(",").size
             val logicCheck = json.getInt("startWeek") <= json.getInt("endWeek") &&
                     json.getInt("startLesson") <= json.getInt("endLesson") &&
                     json.getInt("endLesson") <= maxLesson

@@ -22,7 +22,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField("long", "BUILD_TIME", "${System.currentTimeMillis()}L")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -63,6 +63,10 @@ android {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("release")
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 

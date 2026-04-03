@@ -49,6 +49,7 @@ object PermissionUtil {
                             putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
                         }
                     }
+
                     else -> {
                         Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                             data = Uri.fromParts("package", activity.packageName, null)
@@ -63,8 +64,8 @@ object PermissionUtil {
                 showDialog(activity, message) {
                     val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
                         data = Uri.fromParts("package", activity.packageName, null)
-                }
-                activity.startActivity(intent)
+                    }
+                    activity.startActivity(intent)
                 }
             }
         }

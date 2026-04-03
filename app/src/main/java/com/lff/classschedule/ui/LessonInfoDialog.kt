@@ -3,7 +3,6 @@ package com.lff.classschedule.ui
 import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.AlarmClock
 import android.provider.CalendarContract
@@ -24,7 +23,7 @@ import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.PermissionUtil
 import com.lff.classschedule.util.ScreenUtil
 import java.time.ZoneId
-import java.util.TimeZone
+import java.util.*
 
 class LessonInfoDialog : DialogFragment() {
 
@@ -86,7 +85,13 @@ class LessonInfoDialog : DialogFragment() {
 
         if (arguments != null) {
             lesson = CompatibilityUtil.getParcelableLesson(requireArguments())!!
-            reminderDescription = "${CourseTimeUtil.getTimeStringByStartAndEndClassIndex(requireContext(), lesson.startLesson, lesson.endLesson)} " +
+            reminderDescription = "${
+                CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
+                    requireContext(),
+                    lesson.startLesson,
+                    lesson.endLesson
+                )
+            } " +
                     "在 ${lesson.course.location} 上 ${lesson.name} 课。"
         }
 
@@ -126,9 +131,11 @@ class LessonInfoDialog : DialogFragment() {
                     )
                 }
             }
+
             SharedPreferenceConfig.RemindWay.WAY_ALARM -> {
                 setAlarm()
             }
+
             SharedPreferenceConfig.RemindWay.WAY_NOTIFICATION -> {
                 LessonReminderReceiver.setLessonReminder(context, lesson)
             }
@@ -170,7 +177,8 @@ class LessonInfoDialog : DialogFragment() {
             val uri = context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
 
             if (uri != null) {
-                Toast.makeText(context, "已成功加入日历，将在上课前${reminderMinutes} 分钟提醒你", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "已成功加入日历，将在上课前${reminderMinutes} 分钟提醒你", Toast.LENGTH_SHORT)
+                    .show()
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -17,6 +17,9 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.ClassSchedule">
         <activity
+                android:name=".AboutActivity"
+                android:exported="false"/>
+        <activity
                 android:name=".AppSettingsActivity"
                 android:exported="false"/>
         <activity

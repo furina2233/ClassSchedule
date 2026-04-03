@@ -47,7 +47,7 @@ object SharedPreferenceConfig {
     }
 
     fun getString(context: Context, key: String): String =
-        getPrefs(context).getString(key, defaultValuesMap[key] as String)?:""
+        getPrefs(context).getString(key, defaultValuesMap[key] as String) ?: ""
 
     fun setString(context: Context, key: String, value: String) {
         getPrefs(context).edit { putString(key, value) }

@@ -90,7 +90,8 @@ class AddCourseDialog : DialogFragment() {
         val days = arrayOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
         spDay.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, days)
 
-        val maxLessons = SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(',').size
+        val maxLessons =
+            SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(',').size
         val lessons = (1..maxLessons).map { "第 $it 节" }
         val lessonAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, lessons)
         spStartLesson.adapter = lessonAdapter
@@ -146,7 +147,8 @@ class AddCourseDialog : DialogFragment() {
     private fun preFillData() {
         val course = arguments?.let { CompatibilityUtil.getParcelableCourse(it) } ?: return
 
-        val totalWeeks = SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_MAX_WEEKS) // 获取当前设定的总周数
+        val totalWeeks =
+            SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_MAX_WEEKS) // 获取当前设定的总周数
 
         tvTitle.text = "修改课程"
         etName.setText(course.name)

@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkFontScale() {
         val fontScale = resources.configuration.fontScale
-        if (fontScale >= 1.2f){
+        if (fontScale >= 1.2f) {
             AlertDialog.Builder(this)
                 .setTitle("提示")
                 .setMessage("当前系统字体缩放比例过大，可能会导致部分文字显示不全，请将系统字体缩放比例调小。")
@@ -30,11 +30,11 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
-                .setNegativeButton("取消", {_, _ ->
+                .setNegativeButton("取消", { _, _ ->
                     checkFirstLaunch()
                 })
                 .show()
-        } else{
+        } else {
             checkFirstLaunch()
         }
     }

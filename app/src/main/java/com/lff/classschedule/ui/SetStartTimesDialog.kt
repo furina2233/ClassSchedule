@@ -48,7 +48,8 @@ class SetStartTimesDialog : DialogFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        startTimes = SharedPreferenceConfig.getString(context, SharedPreferenceConfig.KEY_START_TIMES).split(",") as MutableList<String>
+        startTimes = SharedPreferenceConfig.getString(context, SharedPreferenceConfig.KEY_START_TIMES)
+            .split(",") as MutableList<String>
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,7 +61,8 @@ class SetStartTimesDialog : DialogFragment() {
         llContainer = view.findViewById(R.id.ll_set_start_times)
         scrollView = view.findViewById(R.id.scroll_view)
 
-        val currentMaxLessons = SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(",").size
+        val currentMaxLessons =
+            SharedPreferenceConfig.getString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES).split(",").size
         Log.d(TAG, "当前的课程开始时间是：${startTimes.joinToString(",")}")
         for (i in 1..currentMaxLessons) {
             addLessonTimeCard(i)
@@ -91,9 +93,13 @@ class SetStartTimesDialog : DialogFragment() {
         }
 
         // 用户通过快速设置开始时间窗口设置开始时间后，重新创建自己的实例
-        childFragmentManager.setFragmentResultListener(QuickSetStartTimesDialog.TAG, this){ _, bundle ->
+        childFragmentManager.setFragmentResultListener(QuickSetStartTimesDialog.TAG, this) { _, bundle ->
             bundle.getString("start_times")?.let { startTimes = it.split(",") as MutableList<String> }
-            SharedPreferenceConfig.setString(requireContext(), SharedPreferenceConfig.KEY_START_TIMES, startTimes.joinToString(","))
+            SharedPreferenceConfig.setString(
+                requireContext(),
+                SharedPreferenceConfig.KEY_START_TIMES,
+                startTimes.joinToString(",")
+            )
             dismiss()
             val dialog = SetStartTimesDialog()
             dialog.show(parentFragmentManager, TAG)

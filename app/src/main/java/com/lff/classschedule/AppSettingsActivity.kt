@@ -6,33 +6,26 @@ import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.util.PermissionUtil
 
 class AppSettingsActivity : AppCompatActivity() {
 
-    companion object{
+    companion object {
         const val TAG = "AppSettingsActivity"
     }
 
-        private lateinit var etTermCommencementTimeMonth: EditText
-        private lateinit var etTermCommencementTimeDay: EditText
-        private lateinit var etSetMaxWeeks: EditText
-        private lateinit var etSetDurationPerLesson: EditText
-        private lateinit var etSetReminderTime: EditText
-        private lateinit var spnSetRemindWay: Spinner
-        private lateinit var tvCurrentLessons: TextView
-        private lateinit var etStartTimes: TextInputEditText
+    private lateinit var etTermCommencementTimeMonth: EditText
+    private lateinit var etTermCommencementTimeDay: EditText
+    private lateinit var etSetMaxWeeks: EditText
+    private lateinit var etSetDurationPerLesson: EditText
+    private lateinit var etSetReminderTime: EditText
+    private lateinit var spnSetRemindWay: Spinner
+    private lateinit var tvCurrentLessons: TextView
+    private lateinit var etStartTimes: TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,13 +82,18 @@ class AppSettingsActivity : AppCompatActivity() {
     }
 
     private fun setupEtTermCommencementTimeMonth() {
-        etTermCommencementTimeMonth.setText(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH).toString())
+        etTermCommencementTimeMonth.setText(
+            SharedPreferenceConfig.getInt(
+                this,
+                SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH
+            ).toString()
+        )
         etTermCommencementTimeMonth.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+            if (!hasFocus) {
                 val month = etTermCommencementTimeMonth.text.toString().toInt()
-                if (month !in 1..12){
-                    Toast.makeText(this,"请输入正确的月份", Toast.LENGTH_SHORT).show()
-                }else{
+                if (month !in 1..12) {
+                    Toast.makeText(this, "请输入正确的月份", Toast.LENGTH_SHORT).show()
+                } else {
                     SharedPreferenceConfig.setInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH, month)
                 }
             }
@@ -103,13 +101,18 @@ class AppSettingsActivity : AppCompatActivity() {
     }
 
     private fun setupEtTermCommencementTimeDay() {
-        etTermCommencementTimeDay.setText(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY).toString())
+        etTermCommencementTimeDay.setText(
+            SharedPreferenceConfig.getInt(
+                this,
+                SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY
+            ).toString()
+        )
         etTermCommencementTimeDay.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+            if (!hasFocus) {
                 val day = etTermCommencementTimeDay.text.toString().toInt()
-                if (day !in 1..31){
-                    Toast.makeText(this,"请输入正确的天数", Toast.LENGTH_SHORT).show()
-                }else{
+                if (day !in 1..31) {
+                    Toast.makeText(this, "请输入正确的天数", Toast.LENGTH_SHORT).show()
+                } else {
                     SharedPreferenceConfig.setInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY, day)
                 }
             }
@@ -119,11 +122,11 @@ class AppSettingsActivity : AppCompatActivity() {
     private fun setupEtSetMaxWeeks() {
         etSetMaxWeeks.setText(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_WEEKS).toString())
         etSetMaxWeeks.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+            if (!hasFocus) {
                 val maxWeeks = etSetMaxWeeks.text.toString().toInt()
-                if (maxWeeks !in 1..53){
-                    Toast.makeText(this,"请输入正确的最大周数", Toast.LENGTH_SHORT).show()
-                }else{
+                if (maxWeeks !in 1..53) {
+                    Toast.makeText(this, "请输入正确的最大周数", Toast.LENGTH_SHORT).show()
+                } else {
                     SharedPreferenceConfig.setInt(this, SharedPreferenceConfig.KEY_MAX_WEEKS, maxWeeks)
                 }
             }
@@ -131,27 +134,38 @@ class AppSettingsActivity : AppCompatActivity() {
     }
 
     private fun setupEtSetDurationPerLesson() {
-        etSetDurationPerLesson.setText(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_DURATION_PER_LESSON).toString())
+        etSetDurationPerLesson.setText(
+            SharedPreferenceConfig.getInt(
+                this,
+                SharedPreferenceConfig.KEY_DURATION_PER_LESSON
+            ).toString()
+        )
         etSetDurationPerLesson.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+            if (!hasFocus) {
                 val durationPerLesson = etSetDurationPerLesson.text.toString().toInt()
-                if (durationPerLesson !in 1..1440){
-                    Toast.makeText(this,"请输入正确的课程时长", Toast.LENGTH_SHORT).show()
-                }else{
-                    SharedPreferenceConfig.setInt(this, SharedPreferenceConfig.KEY_DURATION_PER_LESSON, durationPerLesson)
+                if (durationPerLesson !in 1..1440) {
+                    Toast.makeText(this, "请输入正确的课程时长", Toast.LENGTH_SHORT).show()
+                } else {
+                    SharedPreferenceConfig.setInt(
+                        this,
+                        SharedPreferenceConfig.KEY_DURATION_PER_LESSON,
+                        durationPerLesson
+                    )
                 }
             }
         }
     }
 
     private fun setupEtSetReminderTime() {
-        etSetReminderTime.setText(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_REMINDER_TIME).toString())
+        etSetReminderTime.setText(
+            SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_REMINDER_TIME).toString()
+        )
         etSetReminderTime.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus){
+            if (!hasFocus) {
                 val reminderTime = etSetReminderTime.text.toString().toInt()
-                if (reminderTime !in 0..1440){
-                    Toast.makeText(this,"请输入正确的提醒时间", Toast.LENGTH_SHORT).show()
-                }else{
+                if (reminderTime !in 0..1440) {
+                    Toast.makeText(this, "请输入正确的提醒时间", Toast.LENGTH_SHORT).show()
+                } else {
                     SharedPreferenceConfig.setInt(this, SharedPreferenceConfig.KEY_REMINDER_TIME, reminderTime)
                 }
             }
@@ -167,17 +181,19 @@ class AppSettingsActivity : AppCompatActivity() {
         spnSetRemindWay.setSelection(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_REMIND_WAY))
         spnSetRemindWay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
-                when(position){
+                when (position) {
                     SharedPreferenceConfig.RemindWay.WAY_CALENDAR_SCHEDULE -> {
-                        if (!PermissionUtil.hasCalendarPermission(this@AppSettingsActivity)){
+                        if (!PermissionUtil.hasCalendarPermission(this@AppSettingsActivity)) {
                             val message = "需要读写日历权限，否则无法设置日程。"
                             PermissionUtil.goToCalendarSettings(this@AppSettingsActivity, message)
                         }
                     }
+
                     SharedPreferenceConfig.RemindWay.WAY_ALARM -> {}  // 通过系统闹钟app设置闹钟权限不需要用户手动授予
                     SharedPreferenceConfig.RemindWay.WAY_NOTIFICATION -> {
-                        if (!PermissionUtil.hasNotificationPermission(this@AppSettingsActivity)){
-                            val message = "需要通知权限和精确闹钟权限，否则无法提醒你。\n注意：请将app的省电策略调整为无限制。否则也无法提醒你。"
+                        if (!PermissionUtil.hasNotificationPermission(this@AppSettingsActivity)) {
+                            val message =
+                                "需要通知权限和精确闹钟权限，否则无法提醒你。\n注意：请将app的省电策略调整为无限制。否则也无法提醒你。"
                             PermissionUtil.goToNotificationSettings(this@AppSettingsActivity, message)
                         }
                     }
@@ -190,19 +206,23 @@ class AppSettingsActivity : AppCompatActivity() {
     }
 
     private fun setupTvCurrentLessons() {
-        tvCurrentLessons.text = SharedPreferenceConfig.getString(this, SharedPreferenceConfig.KEY_START_TIMES).split(",").size.toString()
+        tvCurrentLessons.text =
+            SharedPreferenceConfig.getString(this, SharedPreferenceConfig.KEY_START_TIMES).split(",").size.toString()
     }
 
     private fun setupEtStartTimes() {
-        etStartTimes.setText(SharedPreferenceConfig.getString(this, SharedPreferenceConfig.KEY_START_TIMES).split(",").joinToString("\n"))
-        etStartTimes.onFocusChangeListener = View.OnFocusChangeListener{v, hasFocus ->
-            if (!hasFocus){
+        etStartTimes.setText(
+            SharedPreferenceConfig.getString(this, SharedPreferenceConfig.KEY_START_TIMES).split(",").joinToString("\n")
+        )
+        etStartTimes.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
                 val startTimes = etStartTimes.text.toString().split("\n").toTypedArray().map {
                     it.trim().replace("：", ":")
-                }.filter { it.isNotEmpty()
+                }.filter {
+                    it.isNotEmpty()
                 }.toTypedArray()
                 try {
-                    for (time in startTimes){
+                    for (time in startTimes) {
                         val timeArray = time.split(":")
                         val h = timeArray[0].toInt()
                         val m = timeArray[1].toInt()
@@ -210,11 +230,15 @@ class AppSettingsActivity : AppCompatActivity() {
                             throw Exception()
                         }
                     }
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     Toast.makeText(this, "请输入正确的开始时间", Toast.LENGTH_SHORT).show()
                     return@OnFocusChangeListener
                 }
-                SharedPreferenceConfig.setString(this, SharedPreferenceConfig.KEY_START_TIMES, startTimes.joinToString(","))
+                SharedPreferenceConfig.setString(
+                    this,
+                    SharedPreferenceConfig.KEY_START_TIMES,
+                    startTimes.joinToString(",")
+                )
             }
         }
         etStartTimes.addTextChangedListener(object : TextWatcher {
@@ -222,6 +246,7 @@ class AppSettingsActivity : AppCompatActivity() {
                 val text = editable.toString()
                 tvCurrentLessons.text = text.split("\n").size.toString()
             }
+
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
             }
