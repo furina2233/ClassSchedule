@@ -45,7 +45,7 @@
 # ---------------------------------------------------------------------------
 # 保持你的数据模型类 (非常重要：防止数据库/JSON字段名被改乱)
 # 假设你的实体类都在 .data.model 包下
--keep class com.lff.classschedule.** { *; }
+-keep class com.lff.classschedule.pojo.** { *; }
 
 # 如果你使用了特定的自定义类（比如通过反射调用的）
 # -keep class com.lff.classschedule.ui.custom.** { *; }

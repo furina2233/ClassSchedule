@@ -26,10 +26,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    androidResources {
+        localeFilters += listOf("zh-rCN", "zh-rHK", "zh-rTW")
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isShrinkResources = true
         }
     }
     compileOptions {
