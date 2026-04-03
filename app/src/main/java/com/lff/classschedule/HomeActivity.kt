@@ -103,7 +103,7 @@ class HomeActivity : AppCompatActivity() {
                 dateTextViews[i].setTextColor(getColor(R.color.high_light_foreground))
                 (dateTextViews[i].parent as LinearLayout).apply {
                     setBackgroundColor(getColor(R.color.high_light_background))
-                    (getChildAt(0) as TextView).setTextColor(R.color.high_light_foreground)
+                    (getChildAt(0) as TextView).setTextColor(resources.getColor(R.color.high_light_foreground))
                 }
                 findViewById<LinearLayout>(R.id.ll_column_container).getChildAt(i).setBackgroundColor(getColor(R.color.high_light_background))
             } else {
@@ -245,9 +245,6 @@ class HomeActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, weeksArray)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerSelectWeek.adapter = adapter
-
-        val termCommencementTimeMonth = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
-        val termCommencementTimeDay = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
 
         currentWeek = calculateCurrentWeek()
 

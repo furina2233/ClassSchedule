@@ -34,13 +34,15 @@ class LessonReminderReceiver: BroadcastReceiver() {
         const val TAG = "LessonReminderReceiver"
         const val CHANNEL_ID = "lesson_reminder_channel"
 
-        fun setLessonReminder(context: Context, lesson: Lesson): String {
+        fun setLessonReminder(context: Context, lesson: Lesson) {
             if (!PermissionUtil.hasNotificationPermission(context)){
                 val message = "需要通知权限和精确闹钟权限，否则无法提醒你。\n注意：请将app的省电策略调整为无限制。否则也无法提醒你。"
                 PermissionUtil.goToNotificationSettings(context as Activity,message)
-                return "请先开启通知权限"
+                Toast.makeText(context,"请先开启通知权限",Toast.LENGTH_SHORT).show()
+                return
             }
-            return performSetAlarm(context, lesson)
+            val result = performSetAlarm(context, lesson)
+            Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
         }
 
         @SuppressLint("ScheduleExactAlarm")  // 在PermissionUtil中进行检查，不在这里检查
@@ -78,32 +80,6 @@ class LessonReminderReceiver: BroadcastReceiver() {
             return "将在上课前${SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_REMINDER_TIME)}分钟提醒你"
         }
 
-        private fun showNotificationPermissionDialog(context: Context) {
-            AlertDialog.Builder(context)
-                .setTitle("需要权限")
-                .setMessage("请在设置中开启通知权限，否则无法提醒你。")
-                .setPositiveButton("去开启") { _, _ ->
-                    val intent = Intent().apply {
-                        when {
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                                action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                            }
-                            else -> {
-                                action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                                putExtra("app_package", context.packageName)
-                                putExtra("app_uid", context.applicationInfo.uid)
-                            }
-                        }
-                    }
-                    context.startActivity(intent)
-                }
-                .setNegativeButton("取消", null)
-                .show()
-                .apply {
-                    getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(context.resources.getColor(R.color.main_theme, null))
-                }
-        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
