@@ -61,8 +61,6 @@ class CoursesSettingActivity : AppCompatActivity() {
             setupCourseSettingButton()
         }
 
-        syncCoursesMaxWeeksIfNeed()
-
         llCourseList = findViewById(R.id.ll_course_list)
         llBatchDeleteBar = findViewById(R.id.ll_batch_delete_bar)
 
@@ -88,6 +86,7 @@ class CoursesSettingActivity : AppCompatActivity() {
             item.findViewById<ImageButton>(R.id.btn_delete).visibility = View.GONE
             item.findViewById<ConstraintLayout>(R.id.cl_card).setBackgroundResource(R.drawable.bg_course_card)
             item.findViewById<ImageButton>(R.id.btn_delete).tag = false
+            item.findViewById<ImageButton>(R.id.btn_more).visibility = View.VISIBLE
         }
 
         batchDeleteBackPressedCallback.isEnabled = false
@@ -95,6 +94,7 @@ class CoursesSettingActivity : AppCompatActivity() {
         Log.d(TAG, "已通过返回键取消批量删除模式")
     }
 
+    @Deprecated("现在在设置页面中进行相关设置")
     private fun syncCoursesMaxWeeksIfNeed() {
         supportFragmentManager.setFragmentResultListener(CustomSchoolScheduleDialog.TAG, this) { _, bundle ->
             val needSync = bundle.getBoolean("need_sync")
@@ -154,6 +154,9 @@ class CoursesSettingActivity : AppCompatActivity() {
         for (item in llCourseList.children) {
             val btnDelete = item.findViewById<ImageButton>(R.id.btn_delete).apply {
                 visibility = View.VISIBLE
+            }
+            item.findViewById<ImageButton>(R.id.btn_more).apply {
+                visibility = View.INVISIBLE
             }
             val clCard = item.findViewById<ConstraintLayout>(R.id.cl_card)
 

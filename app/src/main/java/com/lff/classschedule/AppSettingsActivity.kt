@@ -1,15 +1,19 @@
 package com.lff.classschedule
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.lff.classschedule.config.SharedPreferenceConfig
+import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.util.PermissionUtil
 
 class AppSettingsActivity : AppCompatActivity() {
@@ -26,6 +30,8 @@ class AppSettingsActivity : AppCompatActivity() {
     private lateinit var spnSetRemindWay: Spinner
     private lateinit var tvCurrentLessons: TextView
     private lateinit var etStartTimes: TextInputEditText
+    private var oldMaxWeeks = -1
+    private lateinit var dbHelper: CourseDbHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +45,8 @@ class AppSettingsActivity : AppCompatActivity() {
         spnSetRemindWay = findViewById(R.id.spn_set_remind_way)
         tvCurrentLessons = findViewById(R.id.tv_current_lessons)
         etStartTimes = findViewById(R.id.et_start_times)
+
+        dbHelper = CourseDbHelper(this)
     }
 
     override fun onResume() {
@@ -120,16 +128,56 @@ class AppSettingsActivity : AppCompatActivity() {
     }
 
     private fun setupEtSetMaxWeeks() {
-        etSetMaxWeeks.setText(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_WEEKS).toString())
+        oldMaxWeeks = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_MAX_WEEKS)
+        etSetMaxWeeks.setText(oldMaxWeeks.toString())
         etSetMaxWeeks.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 val maxWeeks = etSetMaxWeeks.text.toString().toInt()
                 if (maxWeeks !in 1..53) {
                     Toast.makeText(this, "请输入正确的最大周数", Toast.LENGTH_SHORT).show()
                 } else {
+                    if (maxWeeks != oldMaxWeeks) {
+                        showSyncConfirmDialog(maxWeeks)
+                        Log.d(TAG, "修改了总周数")
+                    } else {
+                        Log.d(TAG, "没有修改总周数")
+                    }
                     SharedPreferenceConfig.setInt(this, SharedPreferenceConfig.KEY_MAX_WEEKS, maxWeeks)
                 }
             }
+        }
+    }
+
+    private fun showSyncConfirmDialog(maxWeeks: Int) {
+        AlertDialog.Builder(this)
+            .setTitle("同步课程")
+            .setMessage("是否将新的总周数应用到所有持续整个学期的课程？\n所有持续时长超出新总周数的课程的持续时长将会被截短。")
+            .setPositiveButton("好的") { _, _ ->
+                syncCoursesMaxWeeks(maxWeeks, true)
+            }.setNegativeButton("取消"){_, _ ->
+                syncCoursesMaxWeeks(maxWeeks, false)
+            }
+            .show().apply {
+                setCanceledOnTouchOutside(false)
+                getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED)
+                getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getColor(R.color.main_theme))
+            }
+    }
+
+    private fun syncCoursesMaxWeeks(maxWeeks: Int, needSync: Boolean) {
+        if (maxWeeks > oldMaxWeeks) {
+            // 学期变长
+            if (needSync){
+                val rows = dbHelper.syncCoursesWhenSemesterLengthened(oldMaxWeeks, maxWeeks)
+                if (rows > 0) {
+                    Toast.makeText(this, "已同步课程的持续时长", Toast.LENGTH_SHORT).show()
+                }
+                Log.d(TAG, "学期变长：已将 $rows 门全学期课程更新至 $maxWeeks 周")
+            }
+        } else {
+            // 学期变短
+            val rows = dbHelper.syncCoursesWhenSemesterShortened(maxWeeks)
+            Log.d(TAG, "学期变短：已强制修正 $rows 门溢出课程的持续时长")
         }
     }
 
