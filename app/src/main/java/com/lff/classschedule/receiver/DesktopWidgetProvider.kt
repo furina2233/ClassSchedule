@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import com.lff.classschedule.HomeActivity
 import com.lff.classschedule.MainActivity
 import com.lff.classschedule.R
 import com.lff.classschedule.config.SharedPreferenceConfig
@@ -37,7 +36,7 @@ class DesktopWidgetProvider : AppWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int
     ) {
-        val views = RemoteViews(context.packageName, R.layout.desktop_widget)
+        val views = RemoteViews(context.packageName, R.layout.widget_desktop)
 
         val dbHelper = CourseDbHelper(context)
         val courseSet = dbHelper.queryAllCourses().values.toMutableSet()

@@ -10,9 +10,11 @@
                   android:layout_marginBottom="8dp"
                   android:orientation="horizontal">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textColor="@color/white"
                   android:text="@string/next_lesson"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:id="@+id/next_lesson_name"
+                  android:textColor="@color/white"
                   android:text="@string/no_lesson"
                   android:layout_marginStart="12dp"
                   android:textStyle="bold"/>
@@ -21,9 +23,11 @@
                   android:layout_marginBottom="8dp"
                   android:orientation="horizontal">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textColor="@color/white"
                   android:text="@string/course_time"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:id="@+id/next_lesson_time"
+                  android:textColor="@color/white"
                   android:text="@string/no_lesson"
                   android:layout_marginStart="12dp"/>
     </LinearLayout>
@@ -31,9 +35,11 @@
                   android:layout_marginBottom="8dp"
                   android:orientation="horizontal">
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textColor="@color/white"
                   android:text="@string/course_location"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:id="@+id/next_lesson_location"
+                  android:textColor="@color/white"
                   android:text="@string/no_lesson"
                   android:layout_marginStart="12dp"/>
     </LinearLayout>
