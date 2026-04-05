@@ -87,4 +87,7 @@
     <string name="default_website">点击前往</string>
     <string name="last_build_time">最后构建时间：</string>
     <string name="default_last_build_time">默认最后构建时间</string>
+    <string name="next_lesson">下一节课：</string>
+    <string name="next_lesson_name">默认下节课名称</string>
+    <string name="no_lesson">暂无</string>
 </resources>

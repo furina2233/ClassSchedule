@@ -3,6 +3,8 @@ package com.lff.classschedule.util
 import android.content.Context
 import android.util.Log
 import com.lff.classschedule.config.SharedPreferenceConfig
+import com.lff.classschedule.pojo.Course
+import com.lff.classschedule.pojo.Lesson
 
 object CourseTimeUtil {
     private val TAG = "CourseTimeUtil"
@@ -23,6 +25,21 @@ object CourseTimeUtil {
             Log.e(TAG, "请检查课程时间设置", e)
             return ""
         }
+    }
+
+    fun getFormatLessonTime(context: Context, lesson: Lesson): String{
+        return getFormatLessonTime(context, lesson.course)
+    }
+
+    fun getFormatLessonTime(context: Context, course: Course): String{
+        return "${course.startWeek}-${course.endWeek}周  " +
+                "${getDayOfWeekText(course.dayOfWeek)}  " +
+                "  ${course.startLesson}-${course.endLesson}节  " +
+                getTimeStringByStartAndEndClassIndex(
+                    context,
+                    course.startLesson,
+                    course.endLesson
+                )
     }
 
     fun calculateEndTime(startTime: String, durationMinutes: Int): String {

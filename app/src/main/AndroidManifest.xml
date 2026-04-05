@@ -27,12 +27,14 @@
                 android:exported="false"/>
         <activity
                 android:name=".HomeActivity"
+                android:launchMode="singleTask"
                 android:exported="true"/>
         <activity
                 android:name=".WelcomeActivity"
                 android:exported="true"/>
         <activity
                 android:name=".MainActivity"
+                android:launchMode="singleTask"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -45,6 +47,15 @@
                 android:name=".receiver.LessonReminderReceiver"
                 android:enabled="true"
                 android:exported="false"/>
+        <receiver android:name=".receiver.DesktopWidgetProvider"
+                  android:enabled="true"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/desktop_widget_info"/>
+        </receiver>
     </application>
 
 </manifest>

@@ -68,11 +68,6 @@ class CoursesSettingActivity : AppCompatActivity() {
             exitBatchDeleteMode()
         }
 
-        // 首次使用时
-        if (SharedPreferenceConfig.getBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_ADD_COURSE)) {
-            SharedPreferenceConfig.setBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_ADD_COURSE, false)
-            startActivity(Intent(this, AppSettingsActivity::class.java))
-        }
     }
 
     private fun exitBatchDeleteMode() {

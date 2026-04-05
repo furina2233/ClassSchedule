@@ -9,7 +9,6 @@ object SharedPreferenceConfig {
     const val KEY_MAX_WEEKS = "max_weeks"
     const val KEY_DURATION_PER_LESSON = "duration_per_lesson"
     const val KEY_IS_FIRST_LAUNCH = "is_first_launch"
-    const val KEY_IS_FIRST_ADD_COURSE = "is_first_add_course"
     const val KEY_START_TIMES = "start_times_csv"
     const val KEY_TERM_COMMENCEMENT_TIME_MONTH = "term_commencement_time_month"
     const val KEY_TERM_COMMENCEMENT_TIME_DAY = "term_commencement_time_day"
@@ -22,7 +21,6 @@ object SharedPreferenceConfig {
         defaultValuesMap[KEY_MAX_WEEKS] = 18
         defaultValuesMap[KEY_DURATION_PER_LESSON] = 45
         defaultValuesMap[KEY_IS_FIRST_LAUNCH] = true
-        defaultValuesMap[KEY_IS_FIRST_ADD_COURSE] = true
         defaultValuesMap[KEY_START_TIMES] = "8:00,8:50,9:50,10:40,11:30,14:00,14:50,15:50,16:40,17:30,19:00,19:50,20:40"
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_MONTH] = 9
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_DAY] = 1

@@ -1,5 +1,7 @@
 package com.lff.classschedule
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,7 @@ import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.pojo.Lesson
+import com.lff.classschedule.receiver.DesktopWidgetProvider
 import com.lff.classschedule.ui.LessonInfoDialog
 import com.lff.classschedule.util.ColorUtil
 import com.lff.classschedule.util.CourseTimeUtil
@@ -74,6 +77,20 @@ class HomeActivity : AppCompatActivity() {
         loadClassScheduleTable()
 
         refreshSchedule()
+
+        refreshDesktopWidget()
+    }
+
+    private fun refreshDesktopWidget() {
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+        val widgetName = ComponentName(this, DesktopWidgetProvider::class.java)
+        val appWidgetIds = appWidgetManager.getAppWidgetIds(widgetName)
+
+        val intent = Intent(this, DesktopWidgetProvider::class.java).apply {
+            action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds)
+        }
+        sendBroadcast(intent)
     }
 
     fun getFirstMonday() {

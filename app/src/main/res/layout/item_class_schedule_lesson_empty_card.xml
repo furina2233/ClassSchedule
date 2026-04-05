@@ -9,7 +9,7 @@
         android:layout_marginStart="@dimen/default_card_margin_side"
         android:layout_marginEnd="@dimen/default_card_margin_side"
         android:layout_height="@dimen/default_header_and_card_height"
-        android:clickable="true"
+        android:clickable="false"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground">
     
@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:ellipsize="end"
             android:gravity="start|top"
+            android:clickable="false"
             android:padding="5dp"
             android:text=""
             android:textColor="#FFFFFF"

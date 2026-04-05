@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.google.android.material.button.MaterialButton
+import com.lff.classschedule.config.SharedPreferenceConfig
 
 class WelcomeActivity : AppCompatActivity() {
 
@@ -23,14 +24,14 @@ class WelcomeActivity : AppCompatActivity() {
 
         btnSkip.setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
-            val sharedPreferences = getSharedPreferences("class_schedule_config", MODE_PRIVATE)
-            sharedPreferences.edit { putBoolean("is_first_launch", false) }
+            SharedPreferenceConfig.setBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_LAUNCH, false)
             finish()
         }
         btnGo.setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
             startActivity(Intent(this, CoursesSettingActivity::class.java))
-            val sharedPreferences = getSharedPreferences("class_schedule_config", MODE_PRIVATE)
-            sharedPreferences.edit { putBoolean("is_first_launch", false) }
+            startActivity(Intent(this, AppSettingsActivity::class.java))
+            SharedPreferenceConfig.setBoolean(this, SharedPreferenceConfig.KEY_IS_FIRST_LAUNCH, false)
             finish()
         }
         Log.d(TAG, "onCreate: 跳过键和开始使用键已初始化")

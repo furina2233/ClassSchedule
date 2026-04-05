@@ -96,14 +96,7 @@ class LessonInfoDialog : DialogFragment() {
         }
 
         tvLessonName.text = lesson.name
-        tvLessonTime.text = "${lesson.course.startWeek}-${lesson.course.endWeek}周  " +
-                "${CourseTimeUtil.getDayOfWeekText(lesson.course.dayOfWeek)}  " +
-                "  ${lesson.startLesson}-${lesson.endLesson}节  " +
-                CourseTimeUtil.getTimeStringByStartAndEndClassIndex(
-                    requireContext(),
-                    lesson.startLesson,
-                    lesson.endLesson
-                )
+        tvLessonTime.text = CourseTimeUtil.getFormatLessonTime(requireContext(),lesson)
         tvLessonLocation.text = lesson.course.location
 
         btnClose = view.findViewById(R.id.btn_close)
