@@ -27,11 +27,11 @@ object CourseTimeUtil {
         }
     }
 
-    fun getFormatLessonTime(context: Context, lesson: Lesson): String{
+    fun getFormatLessonTime(context: Context, lesson: Lesson): String {
         return getFormatLessonTime(context, lesson.course)
     }
 
-    fun getFormatLessonTime(context: Context, course: Course): String{
+    fun getFormatLessonTime(context: Context, course: Course): String {
         return "${course.startWeek}-${course.endWeek}周  " +
                 "${getDayOfWeekText(course.dayOfWeek)}  " +
                 "  ${course.startLesson}-${course.endLesson}节  " +

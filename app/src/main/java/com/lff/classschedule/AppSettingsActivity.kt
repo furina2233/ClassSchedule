@@ -154,7 +154,7 @@ class AppSettingsActivity : AppCompatActivity() {
             .setMessage("是否将新的总周数应用到所有持续整个学期的课程？\n所有持续时长超出新总周数的课程的持续时长将会被截短。")
             .setPositiveButton("好的") { _, _ ->
                 syncCoursesMaxWeeks(maxWeeks, true)
-            }.setNegativeButton("取消"){_, _ ->
+            }.setNegativeButton("取消") { _, _ ->
                 syncCoursesMaxWeeks(maxWeeks, false)
             }
             .show().apply {
@@ -167,7 +167,7 @@ class AppSettingsActivity : AppCompatActivity() {
     private fun syncCoursesMaxWeeks(maxWeeks: Int, needSync: Boolean) {
         if (maxWeeks > oldMaxWeeks) {
             // 学期变长
-            if (needSync){
+            if (needSync) {
                 val rows = dbHelper.syncCoursesWhenSemesterLengthened(oldMaxWeeks, maxWeeks)
                 if (rows > 0) {
                     Toast.makeText(this, "已同步课程的持续时长", Toast.LENGTH_SHORT).show()

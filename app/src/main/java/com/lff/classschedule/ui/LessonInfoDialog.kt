@@ -96,7 +96,7 @@ class LessonInfoDialog : DialogFragment() {
         }
 
         tvLessonName.text = lesson.name
-        tvLessonTime.text = CourseTimeUtil.getFormatLessonTime(requireContext(),lesson)
+        tvLessonTime.text = CourseTimeUtil.getFormatLessonTime(requireContext(), lesson)
         tvLessonLocation.text = lesson.course.location
 
         btnClose = view.findViewById(R.id.btn_close)

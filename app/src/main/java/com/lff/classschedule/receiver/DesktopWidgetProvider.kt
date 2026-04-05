@@ -46,7 +46,7 @@ class DesktopWidgetProvider : AppWidgetProvider() {
         if (nextCourse != null) {
             views.setTextViewText(R.id.next_lesson_name, nextCourse.name)
 
-            val timeStr = CourseTimeUtil.getFormatLessonTime(context,nextCourse)
+            val timeStr = CourseTimeUtil.getFormatLessonTime(context, nextCourse)
             views.setTextViewText(R.id.next_lesson_time, timeStr)
             views.setTextViewText(R.id.next_lesson_location, nextCourse.location)
         } else {
