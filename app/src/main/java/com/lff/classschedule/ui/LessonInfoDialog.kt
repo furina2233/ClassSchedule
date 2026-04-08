@@ -22,7 +22,10 @@ import com.lff.classschedule.util.CompatibilityUtil
 import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.PermissionUtil
 import com.lff.classschedule.util.ScreenUtil
+import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.*
 
 class LessonInfoDialog : DialogFragment() {
@@ -47,6 +50,7 @@ class LessonInfoDialog : DialogFragment() {
     private lateinit var btnClose: MaterialButton
     private lateinit var btnRemindMe: MaterialButton
     private lateinit var reminderDescription: String
+    private var reminderTime: Long = -1
 
     private val calendarPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -105,11 +109,26 @@ class LessonInfoDialog : DialogFragment() {
         btnRemindMe.setOnClickListener {
             onRemindMeButtonClick()
         }
+
+        reminderTime = lesson.startTime.minusMinutes(
+            SharedPreferenceConfig.getInt(
+                requireContext(),
+                SharedPreferenceConfig.KEY_REMINDER_TIME
+            ).toLong()
+        ).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 
     private fun onRemindMeButtonClick() {
         val context = requireContext()
         val remindWay = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_REMIND_WAY)
+
+        val latestReminderTime = System.currentTimeMillis() -
+                SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_REMINDER_TIME) * 60000L
+
+        if (reminderTime < latestReminderTime) {
+            Toast.makeText(context,"这节课已经上过啦！",Toast.LENGTH_SHORT).show()
+            return
+        }
 
         when (remindWay) {
             SharedPreferenceConfig.RemindWay.WAY_CALENDAR_SCHEDULE -> {
@@ -127,17 +146,14 @@ class LessonInfoDialog : DialogFragment() {
             }
 
             SharedPreferenceConfig.RemindWay.WAY_NOTIFICATION -> {
-                LessonReminderReceiver.setLessonReminder(context, lesson)
+                LessonReminderReceiver.setLessonReminder(context, lesson, reminderTime)
             }
         }
     }
 
     private fun setAlarm() {
         // 闹钟提前指定分钟响起
-        val alarmTime = lesson.startTime.minusMinutes(
-            SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_REMINDER_TIME)
-                .toLong()
-        )
+        val alarmTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(reminderTime), ZoneId.systemDefault())
         val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
             putExtra(AlarmClock.EXTRA_MESSAGE, reminderDescription)
             putExtra(AlarmClock.EXTRA_DAYS, lesson.course.dayOfWeek)
@@ -156,14 +172,12 @@ class LessonInfoDialog : DialogFragment() {
         try {
             val context = requireContext()
             val reminderMinutes = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_REMINDER_TIME)
-
             val endMillis = lesson.startTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-            val startMillis = endMillis - (reminderMinutes.toLong() * 60_000L)
 
             val values = ContentValues().apply {
                 put(CalendarContract.Events.TITLE, lesson.name)
                 put(CalendarContract.Events.DESCRIPTION, reminderDescription)
-                put(CalendarContract.Events.DTSTART, startMillis)
+                put(CalendarContract.Events.DTSTART, reminderTime)
                 put(CalendarContract.Events.DTEND, endMillis)
                 put(CalendarContract.Events.CALENDAR_ID, 1)
                 put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)

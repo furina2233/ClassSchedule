@@ -23,7 +23,7 @@ class LessonReminderReceiver : BroadcastReceiver() {
         const val TAG = "LessonReminderReceiver"
         const val CHANNEL_ID = "lesson_reminder_channel"
 
-        fun setLessonReminder(context: Context, lesson: Lesson) {
+        fun setLessonReminder(context: Context, lesson: Lesson, reminderTime: Long) {
             if (!PermissionUtil.hasNotificationPermission(context)) {
                 val message =
                     "需要通知权限和精确闹钟权限，否则无法提醒你。\n注意：请将app的省电策略调整为无限制。否则也无法提醒你。"
@@ -31,12 +31,12 @@ class LessonReminderReceiver : BroadcastReceiver() {
                 Toast.makeText(context, "请先开启通知权限", Toast.LENGTH_SHORT).show()
                 return
             }
-            val result = performSetAlarm(context, lesson)
+            val result = performSetAlarm(context, lesson, reminderTime)
             Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
         }
 
         @SuppressLint("ScheduleExactAlarm")  // 在PermissionUtil中进行检查，不在这里检查
-        private fun performSetAlarm(context: Context, lesson: Lesson): String {
+        private fun performSetAlarm(context: Context, lesson: Lesson, reminderTime: Long): String {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val description =
                 CourseTimeUtil.getTimeStringByStartAndEndClassIndex(context, lesson.startLesson, lesson.endLesson) +
@@ -55,18 +55,6 @@ class LessonReminderReceiver : BroadcastReceiver() {
                 intent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
-
-            val reminderTime = lesson.startTime.minusMinutes(
-                SharedPreferenceConfig.getInt(
-                    context,
-                    SharedPreferenceConfig.KEY_REMINDER_TIME
-                ).toLong()
-            )
-                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-            if (reminderTime < System.currentTimeMillis()) {
-                return "这节课已经上过啦！"
-            }
 
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
