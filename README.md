@@ -22,4 +22,4 @@
 <br/><br/>
 ![](docs/images/5.png)
 <br/><br/>
-仓库地址：<https://github.com/yourusername/ClassSchedule>
+仓库地址：<https://github.com/furina2233/ClassSchedule>
