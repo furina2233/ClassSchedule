@@ -228,6 +228,40 @@
                             android:scrollbars="vertical"/>
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:text="@string/reset_app"
+                          android:textSize="16sp"
+                          app:layout_constraintStart_toStartOf="parent"
+                          app:layout_constraintTop_toTopOf="parent"
+                          app:layout_constraintBottom_toBottomOf="parent"/>
+                <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset_app"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/confirm_reset"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="5dp"
+                        android:paddingHorizontal="10dp"
+                        android:minHeight="30dp"
+                        android:insetTop="5dp"
+                        android:insetBottom="0dp"
+                        app:cornerRadius="20dp"
+                        app:strokeColor="@color/main_theme"
+                        app:strokeWidth="1.5dp"
+                        app:backgroundTint="@color/white"
+                        app:iconTint="@color/main_theme"
+                        app:rippleColor="#20000000"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

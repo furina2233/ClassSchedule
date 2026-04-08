@@ -57,4 +57,8 @@ object SharedPreferenceConfig {
     fun setBoolean(context: Context, key: String, value: Boolean) {
         getPrefs(context).edit { putBoolean(key, value) }
     }
+
+    fun clear(context: Context) {
+        getPrefs(context).edit { clear() }
+    }
 }

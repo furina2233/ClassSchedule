@@ -1,5 +1,6 @@
 package com.lff.classschedule
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -11,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.database.CourseDbHelper
@@ -30,6 +32,7 @@ class AppSettingsActivity : AppCompatActivity() {
     private lateinit var spnSetRemindWay: Spinner
     private lateinit var tvCurrentLessons: TextView
     private lateinit var etStartTimes: TextInputEditText
+    private lateinit var btnResetApp: MaterialButton
     private var oldMaxWeeks = -1
     private lateinit var dbHelper: CourseDbHelper
 
@@ -45,6 +48,7 @@ class AppSettingsActivity : AppCompatActivity() {
         spnSetRemindWay = findViewById(R.id.spn_set_remind_way)
         tvCurrentLessons = findViewById(R.id.tv_current_lessons)
         etStartTimes = findViewById(R.id.et_start_times)
+        btnResetApp = findViewById(R.id.btn_reset_app)
 
         dbHelper = CourseDbHelper(this)
     }
@@ -60,6 +64,7 @@ class AppSettingsActivity : AppCompatActivity() {
         setupSpnSetRemindWay()
         setupTvCurrentLessons()
         setupEtStartTimes()
+        setupBtnResetApp()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -299,5 +304,23 @@ class AppSettingsActivity : AppCompatActivity() {
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+    }
+
+    private fun setupBtnResetApp() {
+        btnResetApp.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("重置设置")
+                .setMessage("确认重置设置吗（已添加的课程将保留）？")
+                .setPositiveButton("确认") { _, _ ->
+                    SharedPreferenceConfig.clear(this)
+                    Toast.makeText(this, "设置已重置", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, AppSettingsActivity::class.java))
+                    finish()
+                }
+                .setNegativeButton("取消", null)
+                .show().apply {
+                    getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED)
+                }
+        }
     }
 }

@@ -41,7 +41,7 @@
     <string name="put_json_data_hero">在此输入JSON数据</string>
     <string name="i_got_it">我知道了</string>
     <string name="prompt">
-        根据图中课程信息，提取为json数组。注意上课地点是否带有空格。如果只有一门课程，也要用中括号包裹json字符串。格式如下：\nname（课程名称,字符串）\nstartWeek（开始周数，整数）\nendWeek（结束周数，整数）\ndayOfWeek（周几上课，整数）\nstartLesson（当天第几节课开始上，整数）\nendLesson（上到当天第几节，整数）\nlocation（上课地点，字符串）
+        根据图中课程信息，提取为json数组。注意上课地点是否带有空格。如果有的课程一周上多次，按多个课程算。如果只有一门课程，也要用中括号包裹json字符串。格式如下：\nname（课程名称,字符串）\nstartWeek（开始周数，整数）\nendWeek（结束周数，整数）\ndayOfWeek（周几上课，整数）\nstartLesson（当天第几节课开始上，整数）\nendLesson（上到当天第几节，整数）\nlocation（上课地点，字符串）
     </string>
     <string name="introduction_to_how_to_batch_add_course">
         在你的学校教务系统课程表界面中截图（或截长图），然后把以下提示词和图片一起发给AI，即可获取对应的JSON数组。
@@ -90,4 +90,6 @@
     <string name="next_lesson">下一节课：</string>
     <string name="next_lesson_name">默认下节课名称</string>
     <string name="no_lesson">暂无</string>
+    <string name="reset_app">重置设置（将保留添加的课程）：</string>
+    <string name="confirm_reset">重置</string>
 </resources>

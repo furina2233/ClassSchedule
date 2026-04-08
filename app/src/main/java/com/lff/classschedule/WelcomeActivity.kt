@@ -9,7 +9,10 @@ import com.lff.classschedule.config.SharedPreferenceConfig
 
 class WelcomeActivity : AppCompatActivity() {
 
-    var TAG = "WelcomeActivity"
+
+    companion object {
+        const val TAG = "WelcomeActivity"
+    }
 
     lateinit var btnSkip: MaterialButton  // 跳过键
     lateinit var btnGo: MaterialButton  // 开始使用键

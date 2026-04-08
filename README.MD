@@ -1,0 +1,25 @@
+# 课程表
+顾名思义，这就是一个课程表app。
+<br/>你可以用来查看每天要上的课。
+<br/>
+<br/><br/>
+![](docs/images/1.png)
+<br/><br/>
+还可以放置桌面小组件，快速查看下一次课。
+<br/><br/>
+![](docs/images/2.png)
+<br/><br/>
+它可以方便地查看本学期的所有课程，并可以快速添加。
+<br/><br/>
+![](docs/images/3.png)
+<br/><br/>
+你可以给某节课设置上课提醒，在上课前指定时间可以提醒你。<br/>
+目前支持日历日程、闹钟、通知三种提醒你的方式。
+<br/><br/>
+![](docs/images/4.png)
+<br/><br/>
+你可以方便地自定义各种数据。
+<br/><br/>
+![](docs/images/5.png)
+<br/><br/>
+仓库地址：<https://github.com/yourusername/ClassSchedule>

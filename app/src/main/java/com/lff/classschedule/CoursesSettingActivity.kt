@@ -24,7 +24,9 @@ import com.lff.classschedule.util.CourseTimeUtil
 
 class CoursesSettingActivity : AppCompatActivity() {
 
-    val TAG = "CoursesSettingActivity"
+    companion object {
+        const val TAG = "CoursesSettingActivity"
+    }
 
     private lateinit var dbHelper: CourseDbHelper
 

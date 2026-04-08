@@ -18,24 +18,30 @@
             android:theme="@style/Theme.ClassSchedule">
         <activity
                 android:name=".AboutActivity"
-                android:exported="false"/>
+                android:exported="false"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".AppSettingsActivity"
-                android:exported="false"/>
+                android:exported="false"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".CoursesSettingActivity"
-                android:exported="false"/>
+                android:exported="false"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".HomeActivity"
                 android:launchMode="singleTask"
-                android:exported="true"/>
+                android:exported="true"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".WelcomeActivity"
-                android:exported="true"/>
+                android:exported="true"
+                android:screenOrientation="portrait"/>
         <activity
                 android:name=".MainActivity"
                 android:launchMode="singleTask"
-                android:exported="true">
+                android:exported="true"
+                android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 

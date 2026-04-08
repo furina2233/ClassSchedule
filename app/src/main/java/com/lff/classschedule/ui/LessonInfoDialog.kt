@@ -76,9 +76,6 @@ class LessonInfoDialog : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 设置点击外部不关闭
-        dialog?.setCanceledOnTouchOutside(false)
-
         tvLessonName = view.findViewById(R.id.tv_lesson_name)
         tvLessonTime = view.findViewById(R.id.tv_lesson_time)
         tvLessonLocation = view.findViewById(R.id.tv_lesson_location)
@@ -136,11 +133,16 @@ class LessonInfoDialog : DialogFragment() {
     }
 
     private fun setAlarm() {
+        // 闹钟提前指定分钟响起
+        val alarmTime = lesson.startTime.minusMinutes(
+            SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_REMINDER_TIME)
+                .toLong()
+        )
         val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
             putExtra(AlarmClock.EXTRA_MESSAGE, reminderDescription)
             putExtra(AlarmClock.EXTRA_DAYS, lesson.course.dayOfWeek)
-            putExtra(AlarmClock.EXTRA_HOUR, lesson.startTime.hour)
-            putExtra(AlarmClock.EXTRA_MINUTES, lesson.startTime.minute)
+            putExtra(AlarmClock.EXTRA_HOUR, alarmTime.hour)
+            putExtra(AlarmClock.EXTRA_MINUTES, alarmTime.minute)
             putExtra(AlarmClock.EXTRA_SKIP_UI, false)  // 设置成功后不自动返回
         }
         try {

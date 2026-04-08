@@ -9,7 +9,9 @@ import com.lff.classschedule.config.SharedPreferenceConfig
 
 class MainActivity : AppCompatActivity() {
 
-    val TAG = "MainActivity"
+    companion object {
+        const val TAG = "MainActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
