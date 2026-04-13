@@ -159,7 +159,14 @@ class LessonInfoDialog : DialogFragment() {
             putExtra(AlarmClock.EXTRA_DAYS, lesson.course.dayOfWeek)
             putExtra(AlarmClock.EXTRA_HOUR, alarmTime.hour)
             putExtra(AlarmClock.EXTRA_MINUTES, alarmTime.minute)
-            putExtra(AlarmClock.EXTRA_SKIP_UI, false)  // 设置成功后不自动返回
+        }
+        // 根据闹钟设置方式选择设置了直接返回课程表还是停留在闹钟界面
+        when(SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_ALARM_WAY)) {
+            SharedPreferenceConfig.AlarmWay.WAY_DIRECTLY -> {
+                intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true)
+            }SharedPreferenceConfig.AlarmWay.WAY_NEED_CONFIRM -> {
+                intent.putExtra(AlarmClock.EXTRA_SKIP_UI, false)
+            }
         }
         try {
             startActivity(intent)

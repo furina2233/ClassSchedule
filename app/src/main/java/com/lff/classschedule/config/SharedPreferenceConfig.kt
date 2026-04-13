@@ -14,6 +14,7 @@ object SharedPreferenceConfig {
     const val KEY_TERM_COMMENCEMENT_TIME_DAY = "term_commencement_time_day"
     const val KEY_REMINDER_TIME = "reminder_time"
     const val KEY_REMIND_WAY = "remind_way"
+    const val KEY_ALARM_WAY = "alarm_way"
 
     private val defaultValuesMap: MutableMap<String, Any> = mutableMapOf()
 
@@ -25,13 +26,19 @@ object SharedPreferenceConfig {
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_MONTH] = 9
         defaultValuesMap[KEY_TERM_COMMENCEMENT_TIME_DAY] = 1
         defaultValuesMap[KEY_REMINDER_TIME] = 10
-        defaultValuesMap[KEY_REMIND_WAY] = 1
+        defaultValuesMap[KEY_REMIND_WAY] = 1  // 默认提醒方式为闹钟
+        defaultValuesMap[KEY_ALARM_WAY] = 0  // 默认设置方式为需要确认
     }
 
     object RemindWay {
         const val WAY_CALENDAR_SCHEDULE = 0
         const val WAY_ALARM = 1
         const val WAY_NOTIFICATION = 2
+    }
+
+    object AlarmWay {
+        const val WAY_NEED_CONFIRM = 0
+        const val WAY_DIRECTLY = 1
     }
 
     private fun getPrefs(context: Context) =
@@ -60,5 +67,6 @@ object SharedPreferenceConfig {
 
     fun clear(context: Context) {
         getPrefs(context).edit { clear() }
+        setBoolean(context,KEY_IS_FIRST_LAUNCH,false)
     }
 }

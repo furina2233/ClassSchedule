@@ -30,6 +30,7 @@ class AppSettingsActivity : AppCompatActivity() {
     private lateinit var etSetDurationPerLesson: EditText
     private lateinit var etSetReminderTime: EditText
     private lateinit var spnSetRemindWay: Spinner
+    private lateinit var spnSetAlarmWay: Spinner
     private lateinit var tvCurrentLessons: TextView
     private lateinit var etStartTimes: TextInputEditText
     private lateinit var btnResetApp: MaterialButton
@@ -46,6 +47,7 @@ class AppSettingsActivity : AppCompatActivity() {
         etSetDurationPerLesson = findViewById(R.id.et_set_duration_per_lesson)
         etSetReminderTime = findViewById(R.id.et_set_reminder_time)
         spnSetRemindWay = findViewById(R.id.spn_set_remind_way)
+        spnSetAlarmWay = findViewById(R.id.spn_set_alarm_way)
         tvCurrentLessons = findViewById(R.id.tv_current_lessons)
         etStartTimes = findViewById(R.id.et_start_times)
         btnResetApp = findViewById(R.id.btn_reset_app)
@@ -62,6 +64,7 @@ class AppSettingsActivity : AppCompatActivity() {
         setupEtSetDurationPerLesson()
         setupEtSetReminderTime()
         setupSpnSetRemindWay()
+        setupSpnSetAlarmWay()
         setupTvCurrentLessons()
         setupEtStartTimes()
         setupBtnResetApp()
@@ -252,6 +255,22 @@ class AppSettingsActivity : AppCompatActivity() {
                     }
                 }
                 SharedPreferenceConfig.setInt(this@AppSettingsActivity, SharedPreferenceConfig.KEY_REMIND_WAY, position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    private fun setupSpnSetAlarmWay(){
+        val alarmWay = arrayOf("需要确认","直接设置")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, alarmWay)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spnSetAlarmWay.adapter = adapter
+
+        spnSetAlarmWay.setSelection(SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_ALARM_WAY))
+        spnSetAlarmWay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, selectedView: View?, position: Int, id: Long) {
+                SharedPreferenceConfig.setInt(this@AppSettingsActivity, SharedPreferenceConfig.KEY_ALARM_WAY, position)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
