@@ -25,7 +25,6 @@ import com.lff.classschedule.util.ScreenUtil
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.util.*
 
 class LessonInfoDialog : DialogFragment() {
@@ -126,7 +125,7 @@ class LessonInfoDialog : DialogFragment() {
                 SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_REMINDER_TIME) * 60000L
 
         if (reminderTime < latestReminderTime) {
-            Toast.makeText(context,"这节课已经上过啦！",Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "这节课已经上过啦！", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -161,10 +160,12 @@ class LessonInfoDialog : DialogFragment() {
             putExtra(AlarmClock.EXTRA_MINUTES, alarmTime.minute)
         }
         // 根据闹钟设置方式选择设置了直接返回课程表还是停留在闹钟界面
-        when(SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_ALARM_WAY)) {
+        when (SharedPreferenceConfig.getInt(requireContext(), SharedPreferenceConfig.KEY_ALARM_WAY)) {
             SharedPreferenceConfig.AlarmWay.WAY_DIRECTLY -> {
                 intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true)
-            }SharedPreferenceConfig.AlarmWay.WAY_NEED_CONFIRM -> {
+            }
+
+            SharedPreferenceConfig.AlarmWay.WAY_NEED_CONFIRM -> {
                 intent.putExtra(AlarmClock.EXTRA_SKIP_UI, false)
             }
         }

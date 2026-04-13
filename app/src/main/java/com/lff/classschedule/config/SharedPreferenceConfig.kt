@@ -67,6 +67,6 @@ object SharedPreferenceConfig {
 
     fun clear(context: Context) {
         getPrefs(context).edit { clear() }
-        setBoolean(context,KEY_IS_FIRST_LAUNCH,false)
+        setBoolean(context, KEY_IS_FIRST_LAUNCH, false)
     }
 }

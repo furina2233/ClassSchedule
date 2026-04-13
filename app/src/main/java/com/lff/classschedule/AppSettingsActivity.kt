@@ -261,8 +261,8 @@ class AppSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupSpnSetAlarmWay(){
-        val alarmWay = arrayOf("需要确认","直接设置")
+    private fun setupSpnSetAlarmWay() {
+        val alarmWay = arrayOf("需要确认", "直接设置")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, alarmWay)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spnSetAlarmWay.adapter = adapter

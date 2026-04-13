@@ -15,7 +15,6 @@ import com.lff.classschedule.pojo.Lesson
 import com.lff.classschedule.util.CourseTimeUtil
 import com.lff.classschedule.util.PermissionUtil
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 class LessonReminderReceiver : BroadcastReceiver() {
 
