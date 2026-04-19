@@ -22,4 +22,11 @@
 <br/><br/>
 ![](docs/images/5.png)
 <br/><br/>
+---
+## 许可证
+
+
+本项目采用 **GPL v3** 许可证开源（详见 [LICENSE](LICENSE) ）。
+
+---
 仓库地址：<https://github.com/furina2233/ClassSchedule>
