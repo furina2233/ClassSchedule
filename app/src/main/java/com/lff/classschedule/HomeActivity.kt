@@ -39,6 +39,7 @@ class HomeActivity : AppCompatActivity() {
     private var currentWeek: Int = 0
     private lateinit var tvMonth: TextView
     private lateinit var dateTextViews: List<TextView>
+    private val courseColorMap = mutableMapOf<Course, Int>() // 更新取色方式，使得课程在整个学期的颜色一致
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,10 @@ class HomeActivity : AppCompatActivity() {
         setupSpinnerSelectWeek()
 
         courseSet = dbHelper.queryAllCourses().values.toMutableSet()
+        for (course in courseSet){
+            courseColorMap[course] = ColorUtil.getColor(course.name)
+        }
+
         Log.d(TAG, "查询到的课程为：$courseSet")
 
         loadClassScheduleTable()
@@ -182,7 +187,7 @@ class HomeActivity : AppCompatActivity() {
         tvLessonInfo.text = lesson.description
 
         // 设置卡片颜色
-        val courseColor = ColorUtil.getColor(lesson.name)
+        val courseColor = courseColorMap[lesson.course]!!
         val flCard = card.findViewById<View>(R.id.fl_lesson_card)
         flCard.background.setTint(courseColor)
 
