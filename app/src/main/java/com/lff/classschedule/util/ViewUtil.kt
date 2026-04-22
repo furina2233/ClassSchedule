@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.TypedValue
 
 object ViewUtil {
-    const val SINGLE_LESSON_DP = 55 // 基础高度
+    const val SINGLE_LESSON_DP = 65 // 基础高度
     const val MARGIN_BOTTOM_DP = 4
 
     fun getLessonHeightPx(context: Context, duration: Int): Int {

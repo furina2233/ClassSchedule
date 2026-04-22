@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="default_header_width">30dp</dimen>
-    <dimen name="default_header_and_card_height">55dp</dimen>
+    <dimen name="default_header_and_card_height">65dp</dimen>
     <dimen name="default_card_margin_top">0dp</dimen>
     <dimen name="default_card_margin_bottom">4dp</dimen>
     <dimen name="default_card_margin_side">1dp</dimen>
