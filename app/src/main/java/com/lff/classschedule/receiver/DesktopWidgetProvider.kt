@@ -97,8 +97,8 @@ class DesktopWidgetProvider : AppWidgetProvider() {
 
                     if (currentSearchDate.isEqual(now)) {
                         val futureCourses = coursesOnThisDay.filter { course ->
-                            val endTime = getEndTime(context, course)
-                            LocalTime.parse(endTime).isAfter(currentTime)
+                            val startTime = CourseTimeUtil.getStartTime(context, course)
+                            LocalTime.parse(startTime).isAfter(currentTime)
                         }
 
                         if (futureCourses.isNotEmpty()) {
@@ -122,18 +122,7 @@ class DesktopWidgetProvider : AppWidgetProvider() {
         return null
     }
 
-    private fun getEndTime(context: Context, course: Course): String {
-        val duration = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_DURATION_PER_LESSON)
-        val startTimes = SharedPreferenceConfig.getString(context, SharedPreferenceConfig.KEY_START_TIMES)
-            .split(",") as MutableList<String>
 
-        return try {
-            val lastLessonStartTime = startTimes[course.endLesson - 1]
-            CourseTimeUtil.calculateEndTime(lastLessonStartTime, duration)
-        } catch (e: Exception) {
-            "23:59"
-        }
-    }
 
     private fun getFirstMonday(context: Context): LocalDate {
         val startMonth = SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)

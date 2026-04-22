@@ -49,7 +49,7 @@ class LessonInfoDialog : DialogFragment() {
     private lateinit var btnClose: MaterialButton
     private lateinit var btnRemindMe: MaterialButton
     private lateinit var reminderDescription: String
-    private var reminderTime: Long = -1
+    private lateinit var reminderTime: LocalDateTime
 
     private val calendarPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -114,7 +114,7 @@ class LessonInfoDialog : DialogFragment() {
                 requireContext(),
                 SharedPreferenceConfig.KEY_REMINDER_TIME
             ).toLong()
-        ).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        )
     }
 
     private fun onRemindMeButtonClick() {
@@ -124,8 +124,13 @@ class LessonInfoDialog : DialogFragment() {
         val latestReminderTime = System.currentTimeMillis() -
                 SharedPreferenceConfig.getInt(context, SharedPreferenceConfig.KEY_REMINDER_TIME) * 60000L
 
-        if (reminderTime < latestReminderTime) {
+        val now = LocalDateTime.now()
+        if (now > lesson.startTime){
             Toast.makeText(context, "这节课已经上过啦！", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (now > reminderTime) {
+            Toast.makeText(context, "这节课就要开始啦！", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -145,14 +150,14 @@ class LessonInfoDialog : DialogFragment() {
             }
 
             SharedPreferenceConfig.RemindWay.WAY_NOTIFICATION -> {
-                LessonReminderReceiver.setLessonReminder(context, lesson, reminderTime)
+                LessonReminderReceiver.setLessonReminder(context, lesson, reminderTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
             }
         }
     }
 
     private fun setAlarm() {
         // 闹钟提前指定分钟响起
-        val alarmTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(reminderTime), ZoneId.systemDefault())
+        val alarmTime = reminderTime
         val intent = Intent(AlarmClock.ACTION_SET_ALARM).apply {
             putExtra(AlarmClock.EXTRA_MESSAGE, reminderDescription)
             putExtra(AlarmClock.EXTRA_DAYS, lesson.course.dayOfWeek)
@@ -185,7 +190,7 @@ class LessonInfoDialog : DialogFragment() {
             val values = ContentValues().apply {
                 put(CalendarContract.Events.TITLE, lesson.name)
                 put(CalendarContract.Events.DESCRIPTION, reminderDescription)
-                put(CalendarContract.Events.DTSTART, reminderTime)
+                put(CalendarContract.Events.DTSTART, reminderTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
                 put(CalendarContract.Events.DTEND, endMillis)
                 put(CalendarContract.Events.CALENDAR_ID, 1)
                 put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)

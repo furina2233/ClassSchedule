@@ -63,6 +63,23 @@ object CourseTimeUtil {
         return String.format("%02d:%02d", hour, minute)
     }
 
+    fun getStartTime(context: Context, course: Course): String {
+        val startTimes = (SharedPreferenceConfig.getString(context, SharedPreferenceConfig.KEY_START_TIMES)
+            .split(",") as MutableList<String>)
+
+        return try {
+            startTimes[course.startLesson - 1].let { time ->
+                if (time.split(":")[0].length == 1) {
+                    "0$time"
+                } else {
+                    time
+                }
+            }
+        } catch (e: Exception) {
+            "00:00"
+        }
+    }
+
     fun getDayOfWeekText(day: Int): String {
         return when (day) {
             1 -> "周一"
