@@ -253,7 +253,7 @@ class HomeActivity : AppCompatActivity() {
                             course.startLesson,
                             course.endLesson,
                             DayOfWeek.of(course.dayOfWeek),
-                            "${course.name}@${course.location}",
+                            "${course.name} - \n${course.location}",
                             lessonDateTime,
                             course
                         )
