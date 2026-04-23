@@ -92,4 +92,5 @@
     <string name="reset_app">重置设置（将保留添加的课程）：</string>
     <string name="confirm_reset">重置</string>
     <string name="alarm_way">闹钟设置方式：</string>
+    <string name="export_as_json">导出为JSON</string>
 </resources>

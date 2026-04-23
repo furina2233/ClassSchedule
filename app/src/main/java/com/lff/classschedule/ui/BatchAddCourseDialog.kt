@@ -1,5 +1,8 @@
 package com.lff.classschedule.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +14,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.lff.classschedule.R
 import com.lff.classschedule.config.SharedPreferenceConfig
+import com.lff.classschedule.database.CourseDbHelper
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.util.ScreenUtil
 import org.json.JSONArray
@@ -22,9 +26,11 @@ class BatchAddCourseDialog : DialogFragment() {
         const val TAG = "BatchAddCourseDialog"
     }
 
+    private lateinit var dbHelper: CourseDbHelper
     private lateinit var etBatchInput: TextInputEditText
     private lateinit var btnSave: MaterialButton
     private lateinit var btnHowToBatchAddCourse: MaterialButton
+    private lateinit var btnExportAsJson: MaterialButton
 
     override fun onStart() {
         super.onStart()
@@ -37,6 +43,8 @@ class BatchAddCourseDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        dbHelper = CourseDbHelper(requireContext())
 
         // 设置点击外部不关闭
         dialog?.setCanceledOnTouchOutside(false)
@@ -55,6 +63,38 @@ class BatchAddCourseDialog : DialogFragment() {
             dialog.show(parentFragmentManager, HowToBatchAddCourseDialog.TAG)
         }
 
+        btnExportAsJson = view.findViewById(R.id.btn_export_as_json)
+        btnExportAsJson.setOnClickListener {
+            onBtnExportAsJsonClicked()
+        }
+
+    }
+
+    private fun onBtnExportAsJsonClicked() {
+        val courseList = dbHelper.queryAllCourses().values.toMutableList().sortedWith(
+            compareBy(
+                {it.dayOfWeek}, {it.startLesson}
+            )
+        )
+        val jsonArray = JSONArray()
+        for (course in courseList){
+            JSONObject().apply {
+                put("name", course.name)
+                put("startWeek", course.startWeek)
+                put("endWeek", course.endWeek)
+                put("dayOfWeek", course.dayOfWeek)
+                put("startLesson", course.startLesson)
+                put("endLesson", course.endLesson)
+                put("location", course.location)
+            }.also {
+                jsonArray.put(it)
+            }
+        }
+
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Courses", jsonArray.toString(4))
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(context, "已复制到剪贴板", Toast.LENGTH_LONG).show()
     }
 
     private fun onBtnSaveClicked() {
