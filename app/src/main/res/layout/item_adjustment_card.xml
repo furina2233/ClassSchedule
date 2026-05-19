@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_course_card"
+        android:padding="12dp">
+
+    <TextView
+            android:id="@+id/tv_adjustment_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/title_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/switch_active"
+            app:layout_constraintHorizontal_bias="0"/>
+
+    <TextView
+            android:id="@+id/tv_original_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            app:layout_constraintTop_toBottomOf="@id/tv_adjustment_desc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/switch_active"
+            app:layout_constraintHorizontal_bias="0"/>
+
+    <TextView
+            android:id="@+id/tv_new_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textSize="14sp"
+            android:textColor="@color/gray"
+            app:layout_constraintTop_toBottomOf="@id/tv_original_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/switch_active"
+            app:layout_constraintHorizontal_bias="0"/>
+
+    <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_delete_adjustment"
+            app:layout_constraintBottom_toTopOf="@+id/tv_new_time"/>
+
+    <ImageButton
+            android:id="@+id/btn_delete_adjustment"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_delete"
+            android:contentDescription="删除"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/red"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

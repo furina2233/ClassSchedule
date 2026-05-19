@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/enable_auto_adjust"
+                android:textSize="16sp"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_auto_adjust"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_run_auto_adjust"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/run_auto_adjust_now"/>
+
+</LinearLayout>
