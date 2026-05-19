@@ -89,8 +89,8 @@
                 app:backgroundTint="@color/white"
                 app:iconTint="@color/main_theme"
                 app:rippleColor="#20000000"
-                app:layout_constraintTop_toTopOf="@id/tv_dialog_title"
-                app:layout_constraintBottom_toBottomOf="@id/tv_dialog_title"
+                app:layout_constraintTop_toTopOf="@id/tv_add_course_dialog_title"
+                app:layout_constraintBottom_toBottomOf="@id/tv_add_course_dialog_title"
                 app:layout_constraintEnd_toEndOf="parent"/>
     </LinearLayout>
 </LinearLayout>

@@ -4,6 +4,9 @@
             android:id="@+id/menu_course_setting"
             android:title="@string/course_setting"/>
     <item
+            android:id="@+id/menu_class_adjustment"
+            android:title="@string/class_adjustment"/>
+    <item
             android:id="@+id/menu_app_settings"
             android:title="@string/app_settings"/>
     <item

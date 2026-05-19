@@ -12,11 +12,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.lff.classschedule.config.SharedPreferenceConfig
-import com.lff.classschedule.database.CourseDbHelper
+import com.lff.classschedule.database.AppDatabase
 import com.lff.classschedule.util.PermissionUtil
+import com.lff.classschedule.viewmodel.AppSettingsViewModel
 
 class AppSettingsActivity : AppCompatActivity() {
 
@@ -24,6 +26,7 @@ class AppSettingsActivity : AppCompatActivity() {
         const val TAG = "AppSettingsActivity"
     }
 
+    private lateinit var viewModel: AppSettingsViewModel
     private lateinit var etTermCommencementTimeMonth: EditText
     private lateinit var etTermCommencementTimeDay: EditText
     private lateinit var etSetMaxWeeks: EditText
@@ -35,11 +38,17 @@ class AppSettingsActivity : AppCompatActivity() {
     private lateinit var etStartTimes: TextInputEditText
     private lateinit var btnResetApp: MaterialButton
     private var oldMaxWeeks = -1
-    private lateinit var dbHelper: CourseDbHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_settings)
+
+        viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return AppSettingsViewModel(AppDatabase.getInstance(this@AppSettingsActivity).courseDao()) as T
+            }
+        })[AppSettingsViewModel::class.java]
 
         etTermCommencementTimeMonth = findViewById(R.id.et_term_commencement_time_month)
         etTermCommencementTimeDay = findViewById(R.id.et_term_commencement_time_day)
@@ -51,8 +60,6 @@ class AppSettingsActivity : AppCompatActivity() {
         tvCurrentLessons = findViewById(R.id.tv_current_lessons)
         etStartTimes = findViewById(R.id.et_start_times)
         btnResetApp = findViewById(R.id.btn_reset_app)
-
-        dbHelper = CourseDbHelper(this)
     }
 
     override fun onResume() {
@@ -75,7 +82,7 @@ class AppSettingsActivity : AppCompatActivity() {
             val v = currentFocus
             if (isShouldHideInput(v, ev)) {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v?.windowToken, 0)  // 收起输入法软键盘
+                imm.hideSoftInputFromWindow(v?.windowToken, 0)
                 v?.clearFocus()
             }
         }
@@ -85,13 +92,11 @@ class AppSettingsActivity : AppCompatActivity() {
     private fun isShouldHideInput(v: View?, event: MotionEvent): Boolean {
         if (v != null && (v is EditText || v is TextInputEditText)) {
             val leftTop = intArrayOf(0, 0)
-            // 获取输入框在屏幕上的位置
             v.getLocationInWindow(leftTop)
             val left = leftTop[0]
             val top = leftTop[1]
             val bottom = top + v.height
             val right = left + v.width
-            // 判断点击坐标是否在输入框区域内
             return !(event.x > left && event.x < right && event.y > top && event.y < bottom)
         }
         return false
@@ -174,18 +179,18 @@ class AppSettingsActivity : AppCompatActivity() {
 
     private fun syncCoursesMaxWeeks(maxWeeks: Int, needSync: Boolean) {
         if (maxWeeks > oldMaxWeeks) {
-            // 学期变长
             if (needSync) {
-                val rows = dbHelper.syncCoursesWhenSemesterLengthened(oldMaxWeeks, maxWeeks)
-                if (rows > 0) {
-                    Toast.makeText(this, "已同步课程的持续时长", Toast.LENGTH_SHORT).show()
+                viewModel.syncSemesterLengthened(oldMaxWeeks, maxWeeks) { rows ->
+                    if (rows > 0) {
+                        Toast.makeText(this, "已同步课程的持续时长", Toast.LENGTH_SHORT).show()
+                    }
+                    Log.d(TAG, "学期变长：已将 $rows 门全学期课程更新至 $maxWeeks 周")
                 }
-                Log.d(TAG, "学期变长：已将 $rows 门全学期课程更新至 $maxWeeks 周")
             }
         } else {
-            // 学期变短
-            val rows = dbHelper.syncCoursesWhenSemesterShortened(maxWeeks)
-            Log.d(TAG, "学期变短：已强制修正 $rows 门溢出课程的持续时长")
+            viewModel.syncSemesterShortened(maxWeeks) { rows ->
+                Log.d(TAG, "学期变短：已强制修正 $rows 门溢出课程的持续时长")
+            }
         }
     }
 
@@ -245,7 +250,7 @@ class AppSettingsActivity : AppCompatActivity() {
                         }
                     }
 
-                    SharedPreferenceConfig.RemindWay.WAY_ALARM -> {}  // 通过系统闹钟app设置闹钟权限不需要用户手动授予
+                    SharedPreferenceConfig.RemindWay.WAY_ALARM -> {}
                     SharedPreferenceConfig.RemindWay.WAY_NOTIFICATION -> {
                         if (!PermissionUtil.hasNotificationPermission(this@AppSettingsActivity)) {
                             val message =
@@ -320,8 +325,7 @@ class AppSettingsActivity : AppCompatActivity() {
             }
 
             override fun beforeTextChanged(charSequence: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-            }
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {}
         })
     }
 

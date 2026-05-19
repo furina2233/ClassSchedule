@@ -14,9 +14,12 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.lff.classschedule.R
 import com.lff.classschedule.config.SharedPreferenceConfig
-import com.lff.classschedule.database.CourseDbHelper
+import com.lff.classschedule.database.AppDatabase
+import com.lff.classschedule.database.CourseMapper.toCourse
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.util.ScreenUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -26,7 +29,6 @@ class BatchAddCourseDialog : DialogFragment() {
         const val TAG = "BatchAddCourseDialog"
     }
 
-    private lateinit var dbHelper: CourseDbHelper
     private lateinit var etBatchInput: TextInputEditText
     private lateinit var btnSave: MaterialButton
     private lateinit var btnHowToBatchAddCourse: MaterialButton
@@ -43,8 +45,6 @@ class BatchAddCourseDialog : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        dbHelper = CourseDbHelper(requireContext())
 
         // 设置点击外部不关闭
         dialog?.setCanceledOnTouchOutside(false)
@@ -71,7 +71,10 @@ class BatchAddCourseDialog : DialogFragment() {
     }
 
     private fun onBtnExportAsJsonClicked() {
-        val courseList = dbHelper.queryAllCourses().values.toMutableList().sortedWith(
+        val db = AppDatabase.getInstance(requireContext())
+        val courseList = runBlocking(Dispatchers.IO) {
+            db.courseDao().getAllCourses()
+        }.map { it.toCourse() }.sortedWith(
             compareBy(
                 {it.dayOfWeek}, {it.startLesson}
             )

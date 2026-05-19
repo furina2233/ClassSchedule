@@ -93,4 +93,10 @@
     <string name="confirm_reset">重置</string>
     <string name="alarm_way">闹钟设置方式：</string>
     <string name="export_as_json">导出为JSON</string>
+    <string name="class_adjustment">调课设置</string>
+    <string name="new_adjustment">新建调课</string>
+    <string name="auto_adjust">自动调课</string>
+    <string name="enable_auto_adjust">是否自动调课</string>
+    <string name="run_auto_adjust_now">立刻进行自动调课</string>
+    <string name="adjustment_description">调课说明</string>
 </resources>

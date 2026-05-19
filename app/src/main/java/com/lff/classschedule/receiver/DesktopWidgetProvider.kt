@@ -9,9 +9,12 @@ import android.widget.RemoteViews
 import com.lff.classschedule.MainActivity
 import com.lff.classschedule.R
 import com.lff.classschedule.config.SharedPreferenceConfig
-import com.lff.classschedule.database.CourseDbHelper
+import com.lff.classschedule.database.AppDatabase
+import com.lff.classschedule.database.CourseMapper.toCourse
 import com.lff.classschedule.pojo.Course
 import com.lff.classschedule.util.CourseTimeUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -38,8 +41,10 @@ class DesktopWidgetProvider : AppWidgetProvider() {
     ) {
         val views = RemoteViews(context.packageName, R.layout.widget_desktop)
 
-        val dbHelper = CourseDbHelper(context)
-        val courseSet = dbHelper.queryAllCourses().values.toMutableSet()
+        val db = AppDatabase.getInstance(context)
+        val courseSet = runBlocking(Dispatchers.IO) {
+            db.courseDao().getAllCoursesBlocking()
+        }.map { it.toCourse() }.toMutableSet()
 
         val nextCourse = findNextLesson(context, courseSet)
 
