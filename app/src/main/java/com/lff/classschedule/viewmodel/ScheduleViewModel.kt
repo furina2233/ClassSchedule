@@ -1,4 +1,4 @@
-package com.lff.classschedule
+package com.lff.classschedule.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -74,23 +74,8 @@ class ScheduleViewModel(
             }
             _firstMonday.postValue(startDoc.with(DayOfWeek.MONDAY))
 
-            val startTimes = startTimesCsv.split(",")
-            val todayDow = today.dayOfWeek.value
-            val nowTime = LocalTime.now()
-
             val activeAdjustments = withContext(Dispatchers.IO) { adjustmentDao.getActiveAdjustments() }
-            val stale = resolveStaleAdjustments(activeAdjustments, startTimes, todayDow, nowTime)
-            if (stale.isNotEmpty()) {
-                withContext(Dispatchers.IO) {
-                    for (adj in stale) {
-                        adjustmentDao.delete(adj)
-                    }
-                }
-                val remaining = withContext(Dispatchers.IO) { adjustmentDao.getActiveAdjustments() }
-                _adjustments.postValue(remaining)
-            } else {
-                _adjustments.postValue(activeAdjustments)
-            }
+            _adjustments.postValue(activeAdjustments)
         }
     }
 

@@ -99,4 +99,5 @@
     <string name="enable_auto_adjust">是否自动调课</string>
     <string name="run_auto_adjust_now">立刻进行自动调课</string>
     <string name="adjustment_description">调课说明</string>
+    <string name="go_to_current_week">回到本周</string>
 </resources>

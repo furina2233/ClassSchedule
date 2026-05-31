@@ -16,6 +16,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.database.AppDatabase
+import com.lff.classschedule.viewmodel.ScheduleViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lff.classschedule.receiver.DesktopWidgetProvider
 import com.lff.classschedule.ui.WeekScheduleFragment
 import java.time.LocalDate
@@ -42,7 +44,9 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var fabGoHome: FloatingActionButton
     private var currentWeek: Int = 0
+    private var actualCurrentWeek: Int = 1
     private var spinnerListenerAttached = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +62,14 @@ class HomeActivity : AppCompatActivity() {
         viewPagerAdapter = WeekPagerAdapter(this)
         viewPager.adapter = viewPagerAdapter
 
+        fabGoHome = findViewById(R.id.fab_go_home)
+        fabGoHome.setOnClickListener {
+            currentWeek = actualCurrentWeek
+            viewPager.setCurrentItem(actualCurrentWeek - 1, false)
+            syncSpinnerToViewPager(actualCurrentWeek - 1)
+            fabGoHome.visibility = View.GONE
+        }
+
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 val selectedWeek = position + 1
@@ -65,6 +77,7 @@ class HomeActivity : AppCompatActivity() {
                     currentWeek = selectedWeek
                     syncSpinnerToViewPager(position)
                 }
+                fabGoHome.visibility = if (selectedWeek == actualCurrentWeek) View.GONE else View.VISIBLE
             }
         })
     }
@@ -85,7 +98,8 @@ class HomeActivity : AppCompatActivity() {
 
         setupSpinnerSelectWeek(maxWeeks)
 
-        currentWeek = calculateCurrentWeek()
+        actualCurrentWeek = calculateCurrentWeek()
+        currentWeek = actualCurrentWeek
 
         val pageIndex = (currentWeek - 1).coerceIn(0, maxWeeks - 1)
         viewPagerAdapter.setItemCount(maxWeeks)
@@ -118,7 +132,14 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun calculateCurrentWeek(): Int {
-        val firstMonday = viewModel.getFirstMonday() ?: return 1
+        val firstMonday = viewModel.getFirstMonday() ?: run {
+            val startMonth = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_MONTH)
+            val startDay = SharedPreferenceConfig.getInt(this, SharedPreferenceConfig.KEY_TERM_COMMENCEMENT_TIME_DAY)
+            val today = LocalDate.now()
+            var startDoc = LocalDate.of(today.year, startMonth, startDay)
+            if (startDoc.isAfter(today.plusMonths(1))) startDoc = startDoc.minusYears(1)
+            startDoc.with(java.time.DayOfWeek.MONDAY)
+        }
         val today = LocalDate.now()
         val daysBetween = ChronoUnit.DAYS.between(firstMonday, today)
         return (daysBetween / 7).toInt() + 1

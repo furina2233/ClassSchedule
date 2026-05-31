@@ -22,7 +22,7 @@ object CompatibilityUtil {
         }
     }
 
-    fun getParcelableLesson(bundle: android.os.Bundle): Lesson? {
+    fun getParcelableLesson(bundle: Bundle): Lesson? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return bundle.getParcelable("lesson", Lesson::class.java)
         } else {

@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.lff.classschedule.R
-import com.lff.classschedule.ScheduleViewModel
+import com.lff.classschedule.viewmodel.ScheduleViewModel
 import com.lff.classschedule.config.SharedPreferenceConfig
 import com.lff.classschedule.database.AppDatabase
 import com.lff.classschedule.pojo.Lesson
@@ -76,6 +76,12 @@ class WeekScheduleFragment : Fragment() {
 
         viewModel.firstMonday.observe(viewLifecycleOwner) {
             if (it != null) renderTimetable()
+        }
+        viewModel.courseSet.observe(viewLifecycleOwner) {
+            if (viewModel.getFirstMonday() != null) renderTimetable()
+        }
+        viewModel.adjustments.observe(viewLifecycleOwner) {
+            if (viewModel.getFirstMonday() != null) renderTimetable()
         }
     }
 

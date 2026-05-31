@@ -165,7 +165,6 @@
             android:id="@+id/sv_class_schedule"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="5dp"
             android:layout_weight="1">
 
         <FrameLayout
@@ -182,7 +181,7 @@
 
                 <LinearLayout
                         android:id="@+id/ll_column_header"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/default_header_width"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"/>
 
